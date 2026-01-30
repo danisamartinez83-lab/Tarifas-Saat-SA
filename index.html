@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarifas Saat SA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <img src="logo-saat.png" alt="Logo Saat SA" class="logo">
+            <h1>Consulta de Tarifas</h1>
+            <p>Sistema de Gestión Interna</p>
+        </header>
+
+        <section class="filtros-card">
+            <div class="grid-filtros">
+                <div class="campo">
+                    <label>Cliente</label>
+                    <select id="filtro-cliente">
+                        <option value="">-- Todos los Clientes --</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Mes</label>
+                    <select id="filtro-mes">
+                        <option value="">-- Todos los Meses --</option>
+                        <option value="enero">Enero</option>
+                        <option value="febrero">Febrero</option>
+                        <option value="marzo">Marzo</option>
+                        <option value="abril">Abril</option>
+                        <option value="mayo">Mayo</option>
+                        <option value="junio">Junio</option>
+                        <option value="julio">Julio</option>
+                        <option value="agosto">Agosto</option>
+                        <option value="septiembre">Septiembre</option>
+                        <option value="octubre">Octubre</option>
+                        <option value="noviembre">Noviembre</option>
+                        <option value="diciembre">Diciembre</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Año</label>
+                    <select id="filtro-año">
+                        <option value="">-- Todos --</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                    </select>
+                </div>
+                <div class="campo btn-group">
+                    <button id="btn-buscar" class="btn-primario">Buscar</button>
+                    <button id="btn-limpiar" class="btn-secundario">Limpiar</button>
+                    <button id="btn-exportar">Descargar PDF</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="tabla-container">
+            <table id="tabla-tarifas">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Servicio</th>
+                        <th>Estado</th>
+                        <th>Unidades</th>
+                        <th>Mes</th>
+                        <th>Año</th>
+                        <th>Tarifa</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-tabla">
+                    </tbody>
+            </table>
+        </section>
+        
+<div class="dashboard-kpis">
+   
+
+    <div class="kpi-card">
+        <span class="kpi-label">Var. Trimestral (Propia)</span>
+        <span id="var-3meses" class="kpi-value">--</span>
+    </div>
+    <div class="kpi-card">
+        <span class="kpi-label">Var. Semestral (Propia)</span>
+        <span id="var-6meses" class="kpi-value">--</span>
+    </div>
+    <div class="kpi-card">
+        <span class="kpi-label">Var. Anual (Propia)</span>
+        <span id="var-12meses" class="kpi-value">--</span>
+    </div>
+     <div class="kpi-card" id="card-brecha-ipc">
+        <span class="kpi-label">Brecha vs Inflación</span>
+        <span id="kpi-brecha-ipc" class="kpi-value">--</span>
+    </div>
+    
+    <div class="kpi-card" id="card-brecha-salarios">
+        <span class="kpi-label">Brecha vs Salarios</span>
+        <span id="kpi-brecha-salarios" class="kpi-value">--</span>
+    </div>
+</div>
+<div class="seccion-analisis-inline">
+    <div class="control-grupo">
+        <label>Seleccionar año:</label>
+        <select id="filtro-anio-kpi">
+            <option value="2026">2026</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+        </select>
+    </div>
+    
+    <button id="btn-analizar" class="btn-naranja-suave">
+        <i class="fas fa-chart-line"></i> ANALIZAR HISTORIAL
+    </button>
+</div>
+
+    <div class="control-grupo">
+        <label>Ver últimos:</label>
+        <button class="btn-rango" onclick="filtrarPorRango(3)">3 Meses</button>
+        <button class="btn-rango" onclick="filtrarPorRango(6)">6 Meses</button>
+        <button class="btn-rango" onclick="filtrarPorRango(12)">1 Año</button>
+      
+    </div>
+
+    <div id="semaforo-alerta" class="semaforo-mini semaforo-oculto">
+        <span id="semaforo-icono"></span>
+        <span id="semaforo-texto"></span>
+    </div>
+</div>
+
+                <div class="contenedor-graficos">
+    
+    <div class="tarjeta-grafico">
+        <h3>Evolución vs Inflación (Pesos)</h3>
+        <div class="canvas-container">
+            <canvas id="graficoTarifas"></canvas>
+        </div>
+    </div>
+
+    <div class="tarjeta-grafico">
+        <h3>Crecimiento vs Salarios (Porcentaje)</h3>
+        <div class="canvas-container">
+            <canvas id="graficoSalarios"></canvas>
+        </div>
+    </div>
+
+</div>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="tarifas.js"></script>
+    <script src="script.js"></script>
+    <canvas id="graficoTarifas"></canvas>
+<canvas id="graficoSalarios"></canvas>
+   </div>
+   </div>
+</body>
+</html>
