@@ -99,18 +99,18 @@ document.getElementById("btn-analizar").addEventListener("click", () => {
     const mesesTranscurridos = mesFinalIdx + 1;
 
     // --- CÁLCULO DE VARIACIONES PROPIAS ---
+// --- CÁLCULO DE VARIACIONES PROPIAS (CORREGIDO PARA EVITAR INFINITY) ---
     
-    // Anual (o YTD)
-    const varAnual = ((vFinal - vBaseReal) / vBaseReal) * 100;
+    // Anual: Si no existe vBaseReal o es 0 (cliente nuevo), la variación es 0
+    const varAnual = (vBaseReal > 0) ? ((vFinal - vBaseReal) / vBaseReal) * 100 : 0;
     
-    // Semestral (Compara contra Junio, si ya pasó Junio)
+    // Semestral: Si no existe vJun o es 0, la variación es 0
     const vJun = (datosRealesAnio.find(d => d.mes === "junio") || {}).valor;
-    const varSemestre = (vJun && mesFinalIdx >= 5) ? ((vFinal - vJun) / vJun) * 100 : 0;
+    const varSemestre = (vJun > 0 && mesFinalIdx >= 5) ? ((vFinal - vJun) / vJun) * 100 : 0;
     
-    // Trimestral (Compara contra Septiembre, si ya pasó Septiembre)
+    // Trimestral: Si no existe vSep o es 0, la variación es 0
     const vSep = (datosRealesAnio.find(d => d.mes === "septiembre") || {}).valor;
-    const varTrimestre = (vSep && mesFinalIdx >= 8) ? ((vFinal - vSep) / vSep) * 100 : 0;
-
+    const varTrimestre = (vSep > 0 && mesFinalIdx >= 8) ? ((vFinal - vSep) / vSep) * 100 : 0;
     // Actualizar UI de variaciones
     document.getElementById("var-12meses").innerText = varAnual.toFixed(1) + "%";
     document.getElementById("var-6meses").innerText = varSemestre.toFixed(1) + "%";
@@ -171,8 +171,11 @@ function actualizarKPI(idTxt, idCard, valorBrecha, valorMercado) {
     const card = document.getElementById(idCard);
     if (!el || !card) return;
 
+    // Si el valor es finito lo mostramos, si no (caso extremo), ponemos 0
+    const mostrarBrecha = isFinite(valorBrecha) ? valorBrecha.toFixed(1) : "0.0";
+
     el.innerHTML = `
-        ${valorBrecha > 0 ? "+" : ""}${valorBrecha.toFixed(1)}%
+        ${valorBrecha > 0 ? "+" : ""}${mostrarBrecha}%
         <div style="font-size: 0.65em; color: #666; font-weight: normal; margin-top: 4px; opacity: 0.8;">
             Ref. Mercado: ${valorMercado.toFixed(1)}%
         </div>
