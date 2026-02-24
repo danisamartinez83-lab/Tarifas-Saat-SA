@@ -103,26 +103,28 @@
 </div>
 <div class="seccion-analisis-inline">
     <div class="control-grupo">
-        <label>Seleccionar año:</label>
+        <label>1. Seleccionar Año:</label>
         <select id="filtro-anio-kpi">
-            <option value="2026">2026</option>
             <option value="2025">2025</option>
             <option value="2024">2024</option>
         </select>
     </div>
-    
+
+    <div class="control-grupo">
+        <label>2. Servicio:</label>
+        <select id="filtro-servicio" style="width: 200px;">
+            <option value="">Primero busque cliente</option>
+        </select>
+    </div>
+
+    <button id="btn-cargar-servicios" class="btn-naranja-suave" style="background-color: #666; border-color: #666;">
+        <i class="fas fa-sync-alt"></i> CARGAR CONCEPTOS
+    </button>
+
     <button id="btn-analizar" class="btn-naranja-suave">
         <i class="fas fa-chart-line"></i> ANALIZAR HISTORIAL
     </button>
 </div>
-
-    <div class="control-grupo">
-        <label>Ver últimos:</label>
-        <button class="btn-rango" onclick="filtrarPorRango(3)">3 Meses</button>
-        <button class="btn-rango" onclick="filtrarPorRango(6)">6 Meses</button>
-        <button class="btn-rango" onclick="filtrarPorRango(12)">1 Año</button>
-      
-    </div>
 
     <div id="semaforo-alerta" class="semaforo-mini semaforo-oculto">
         <span id="semaforo-icono"></span>

@@ -68,6 +68,7 @@ select {
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #fafafa;
+    height: 42px; /* Altura estandarizada */
 }
 
 /* --- GRUPO DE BOTONES --- */
@@ -124,7 +125,7 @@ select {
 #tabla-tarifas {
     width: 100%;
     border-collapse: collapse;
-    min-width: 800px; /* Garantiza el scroll en celulares */
+    min-width: 800px;
 }
 
 #tabla-tarifas thead {
@@ -180,29 +181,40 @@ select {
     color: #333;
 }
 
-/* --- SECCIÓN ANÁLISIS (ALINEACIÓN CORREGIDA) --- */
+/* --- SECCIÓN ANÁLISIS (MODIFICADA COMPLETA) --- */
 .seccion-analisis-inline {
     display: flex;
-    align-items: flex-end; /* Alinea botón con la base del select */
-    gap: 15px;
+    align-items: flex-end; /* Clave: todos los elementos se apoyan en la misma base */
+    gap: 12px;
     background: #f9f9f9;
     padding: 20px;
     border-radius: 8px;
     border: 1px solid #eee;
     margin: 20px 0;
+    flex-wrap: wrap; /* Para que en móviles se acomoden solos */
 }
 
 .seccion-analisis-inline .control-grupo {
     margin-bottom: 0;
-    flex: 0 1 auto;
+    flex: 1; /* Permite que los selectores crezcan proporcionalmente */
+    min-width: 140px;
 }
 
-#filtro-anio-kpi {
+.seccion-analisis-inline .control-grupo label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #666;
+}
+
+#filtro-anio-kpi, #filtro-servicio {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background: white;
-    width: 120px;
+    width: 100%; /* Ocupa el ancho de su control-grupo */
+    height: 42px;
 }
 
 .btn-naranja-suave {
@@ -213,16 +225,28 @@ select {
     border-radius: 5px;
     font-weight: 600;
     cursor: pointer;
-    height: 40px; /* Altura igual al select */
-    transition: background 0.3s;
+    height: 42px; /* Misma altura que los select */
+    transition: 0.3s;
     text-transform: uppercase;
+    font-size: 0.8rem;
+    padding: 0 15px;
+    min-width: 160px;
+}
+
+/* Estilo diferente para el botón de Cargar para distinguirlo del de Analizar */
+#btn-cargar-servicios {
+    background-color: #666; /* Gris oscuro para diferenciar */
+}
+
+#btn-cargar-servicios:hover {
+    background-color: #444;
 }
 
 .btn-naranja-suave:hover {
     background-color: #ffb167;
 }
 
-/* --- BOTONES DE RANGO (NARANJA Y BLANCO) --- */
+/* --- BOTONES DE RANGO --- */
 .btn-rango {
     background: white;
     border: 2px solid #ff6600;

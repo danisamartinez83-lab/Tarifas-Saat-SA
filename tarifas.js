@@ -107,24 +107,51 @@ document.getElementById("btn-buscar").addEventListener("click", () => {
     }
 });
 
-// --- BOTÓN ANALIZAR: FILTRA SOLO PARA GRÁFICOS Y KPI ---
-// --- BOTÓN ANALIZAR: FILTRA POR PALABRA CLAVE "PASIVO" ---
+// --- NUEVO EVENTO: CARGAR CONCEPTOS DEL CLIENTE ---
+document.getElementById("btn-cargar-servicios").addEventListener("click", () => {
+    const clienteSel = document.getElementById("filtro-cliente").value;
+    const selectServicio = document.getElementById("filtro-servicio");
+
+    if (!clienteSel) return alert("Por favor, seleccione un cliente en los filtros superiores.");
+
+    // Filtramos los servicios únicos que pertenecen a este cliente
+    const servicios = [...new Set(listaTarifas
+        .filter(t => t.cliente === clienteSel)
+        .map(t => t.servicio))]
+        .sort();
+
+    // Limpiamos y cargamos el selector
+    selectServicio.innerHTML = '<option value="">Seleccione Concepto...</option>';
+    servicios.forEach(s => {
+        const o = document.createElement("option");
+        o.value = o.textContent = s;
+        selectServicio.appendChild(o);
+    });
+
+    // Pequeño aviso visual
+    console.log("Servicios cargados para:", clienteSel);
+});
+
+// --- BOTÓN ANALIZAR: AHORA DINÁMICO ---
 document.getElementById("btn-analizar").addEventListener("click", () => {
     const anioSel = document.getElementById("filtro-anio-kpi").value;
+    const servicioSel = document.getElementById("filtro-servicio").value;
     const anioAnt = (parseInt(anioSel) - 1).toString();
 
-    // --- FILTRO INTELIGENTE: Busca cualquier servicio que incluya la palabra "Pasivo" ---
-    const datosFiltradosParaAnalisis = datosClienteActual.filter(d => {
-        const nombreServicio = (d.servicio || "").toLowerCase();
-        return nombreServicio.includes("pasivo"); 
-    });
+    // Validación: Si no eligió servicio, no podemos graficar nada coherente
+    if (!servicioSel) {
+        return alert("Seleccione un Servicio/Concepto antes de analizar.");
+    }
+
+    // --- FILTRO DINÁMICO: Filtramos por el servicio exacto seleccionado ---
+    const datosFiltradosParaAnalisis = datosClienteActual.filter(d => d.servicio === servicioSel);
 
     // 1. Datos reales del año seleccionado (del concepto filtrado)
     const datosRealesAnio = datosFiltradosParaAnalisis.filter(d => d.año === anioSel)
         .sort((a, b) => obtenerMesNumero(a.mes) - obtenerMesNumero(b.mes));
 
     if (datosRealesAnio.length === 0) {
-        return alert("No se encontraron conceptos que contengan la palabra 'Pasivo' para este año.");
+        return alert("No hay datos históricos para el concepto '" + servicioSel + "' en el año " + anioSel);
     }
 
     // 2. Base de cálculo (Diciembre anterior del concepto filtrado)
@@ -137,7 +164,7 @@ document.getElementById("btn-analizar").addEventListener("click", () => {
     const mesFinalIdx = obtenerMesNumero(ultimoDato.mes);
     const mesesTranscurridos = mesFinalIdx + 1;
 
-    // --- CÁLCULO DE VARIACIONES PROPIAS (EVITANDO INFINITY) ---
+    // --- CÁLCULO DE VARIACIONES PROPIAS ---
     const varAnual = (vBaseReal > 0) ? ((vFinal - vBaseReal) / vBaseReal) * 100 : 0;
     
     const vJun = (datosRealesAnio.find(d => d.mes === "junio") || {}).valor;
