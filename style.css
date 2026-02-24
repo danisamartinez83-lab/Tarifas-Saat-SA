@@ -68,7 +68,7 @@ select {
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #fafafa;
-    height: 42px; /* Altura estandarizada */
+    height: 42px;
 }
 
 /* --- GRUPO DE BOTONES --- */
@@ -181,7 +181,7 @@ select {
     color: #333;
 }
 
-/* --- SECCIÓN ANÁLISIS (MODIFICADA COMPLETA) --- */
+/* --- SECCIÓN ANÁLISIS --- */
 .seccion-analisis-inline {
     display: flex;
     align-items: flex-end; 
@@ -215,7 +215,7 @@ select {
     background: white;
     width: 100%; 
     height: 42px;
-    box-sizing: border-box; /* Asegura que el padding no rompa el ancho */
+    box-sizing: border-box;
 }
 
 .btn-naranja-suave {
@@ -246,10 +246,10 @@ select {
     background-color: #ffb167;
 }
 
-/* --- BOTONES DE RANGO (CORREGIDO PARA CENTRADO) --- */
+/* --- BOTONES DE RANGO (CENTRADO) --- */
 #botones-rango-container {
     display: flex;
-    justify-content: center; /* Centra los botones */
+    justify-content: center; 
     gap: 10px;
     margin: 15px 0 25px 0;
     flex-wrap: wrap;
@@ -280,7 +280,7 @@ select {
     box-shadow: 0 2px 5px rgba(255, 102, 0, 0.4);
 }
 
-/* --- GRÁFICOS (CORREGIDO PARA ENCUADRE) --- */
+/* --- GRÁFICOS (AJUSTE DE ENCUADRE) --- */
 .contenedor-graficos {
     display: flex;
     flex-wrap: wrap;
@@ -292,13 +292,13 @@ select {
 
 .tarjeta-grafico {
     flex: 1;
-    min-width: 300px; /* Reducido para mejor encuadre móvil */
+    min-width: 300px;
     max-width: 100%;
     background: #ffffff;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    box-sizing: border-box; /* Clave para no sobresalir a la derecha */
+    box-sizing: border-box;
 }
 
 .canvas-container {
@@ -307,46 +307,50 @@ select {
     width: 100%;
 }
 
-/* --- RESPONSIVE --- */
+/* --- RESPONSIVE MÓVIL --- */
 @media (max-width: 768px) {
-    body {
-        padding: 10px;
-    }
-
-    .seccion-analisis-inline {
-        flex-direction: column;
-        align-items: stretch;
-        padding: 15px;
-    }
-    
-    .btn-naranja-suave {
-        width: 100%;
-        min-width: 100%;
-    }
-
-    .dashboard-kpis {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .tarjeta-grafico {
-        min-width: 100%;
-        margin: 0;
-    }
-
-    .canvas-container {
-        height: 280px; /* Altura un poco menor en móviles */
-    }
-
-    .btn-rango {
-        flex: 1; /* Los botones crecen igual en móvil */
-        font-size: 0.75rem;
-        padding: 8px 5px;
-    }
+    body { padding: 10px; }
+    .seccion-analisis-inline { flex-direction: column; align-items: stretch; padding: 15px; }
+    .btn-naranja-suave { width: 100%; min-width: 100%; }
+    .dashboard-kpis { grid-template-columns: 1fr 1fr; }
+    .tarjeta-grafico { min-width: 100%; margin: 0; }
+    .canvas-container { height: 280px; }
+    .btn-rango { flex: 1; font-size: 0.75rem; padding: 8px 5px; }
 }
 
-/* --- EXPORTACIÓN --- */
+/* --- CORRECCIÓN DE EXPORTACIÓN (ESTO ARREGLA TU PDF) --- */
 @media print {
-    .filtros-card, .btn-group, .seccion-analisis-inline, .btn-rango {
+    /* Mantenemos tus ocultos anteriores y sumamos los nuevos */
+    .filtros-card, .btn-group, .seccion-analisis-inline, .btn-rango, #botones-rango-container {
         display: none !important;
+    }
+
+    /* Forzamos que la tabla NO tenga scroll para que salgan todos los conceptos */
+    .table-scroll { 
+        overflow: visible !important; 
+        border: none !important; 
+    }
+    
+    #tabla-tarifas { 
+        min-width: 100% !important; 
+        width: 100% !important; 
+        font-size: 10pt !important;
+    }
+
+    /* Gráficos: Evitamos que se encimen poniéndolos uno bajo el otro */
+    .contenedor-graficos { 
+        display: block !important; 
+    }
+
+    .tarjeta-grafico { 
+        width: 100% !important; 
+        margin-bottom: 40px !important; 
+        box-shadow: none !important;
+        border: 1px solid #eee !important;
+        page-break-inside: avoid; /* Evita que el gráfico se corte entre páginas */
+    }
+
+    .canvas-container { 
+        height: 300px !important; 
     }
 }
