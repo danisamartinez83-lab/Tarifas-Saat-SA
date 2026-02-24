@@ -288,6 +288,7 @@ select {
     position: relative;
     width: 100%;
     height: 350px; /* IMPORTANTE: Sin esto el gráfico no se ve */
+    overflow: hidden;
 }
 
 /* --- CONFIGURACIÓN PARA EL PDF --- */

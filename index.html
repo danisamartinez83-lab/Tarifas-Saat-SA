@@ -128,21 +128,22 @@
             <button class="btn-rango activo" onclick="filtrarPorRango(12)">Año Completo</button>
         </div>
 
-        <div class="contenedor-graficos">
-            <div class="tarjeta-grafico">
-                <h3 class="titulo-seccion">Evolución vs Inflación (Pesos)</h3>
-                <div class="canvas-container">
-                    <canvas id="graficoVariacion"></canvas>
-                </div>
-            </div>
-
-            <div class="tarjeta-grafico">
-                <h3 class="titulo-seccion">Crecimiento vs Salarios (Porcentaje)</h3>
-                <div class="canvas-container">
-                    <canvas id="graficoEstructura"></canvas>
-                </div>
-            </div>
+ <div class="contenedor-graficos">
+    <div class="tarjeta-grafico">
+        <h3 class="titulo-seccion">Evolución vs Inflación (Pesos)</h3>
+        <div class="canvas-container">
+            <canvas id="graficoTarifas"></canvas>
         </div>
+    </div>
+
+    <div class="tarjeta-grafico">
+        <h3 class="titulo-seccion">Crecimiento vs Salarios (Porcentaje)</h3>
+        <div class="canvas-container">
+            <canvas id="graficoSalarios"></canvas>
+        </div>
+    </div>
+</div>
+          
     </div> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="tarifas.js"></script>
