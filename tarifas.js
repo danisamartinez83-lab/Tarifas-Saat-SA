@@ -60,7 +60,7 @@ function calcularAcumuladoMercado(anio, tipo, mesesAtras) {
 }
 
 // --- BOTONES ---
-// --- BOTONES (CORREGIDO PARA MILLONES) ---
+// --- BOTÓN BUSCAR: MUESTRA TODOS LOS CONCEPTOS EN LA TABLA ---
 document.getElementById("btn-buscar").addEventListener("click", () => {
     const cli = document.getElementById("filtro-cliente").value;
     const mes = document.getElementById("filtro-mes").value.toLowerCase();
@@ -68,51 +68,65 @@ document.getElementById("btn-buscar").addEventListener("click", () => {
 
     if (!cli) return alert("Seleccione un cliente");
 
+    // Cargamos TODOS los datos del cliente para la tabla
     datosClienteActual = listaTarifas.filter(t => t.cliente === cli).map(t => {
         let n = (t.tarifa || "0").trim();
         let v = 0;
 
-        // LÓGICA DE DETECCIÓN DE FORMATO
+        // Lógica de detección de formato (Millones y Miles)
         if (n.includes(',') && n.includes('.')) {
-            // Caso: "1.234.567,89" -> Quitamos puntos, cambiamos coma por punto
             v = parseFloat(n.replace(/\./g, '').replace(',', '.')) || 0;
         } else if (n.includes(',')) {
-            // Caso: "61000,50" -> Cambiamos coma por punto
             v = parseFloat(n.replace(',', '.')) || 0;
         } else if (n.split('.').length > 2) {
-            // Caso: "1.234.567" (más de un punto es mil)
             v = parseFloat(n.replace(/\./g, '')) || 0;
         } else {
-            // Caso simple: "61000"
             v = parseFloat(n) || 0;
         }
-
-        // AUTO-CORRECCIÓN: 
-        // Si después de limpiar, el número es absurdamente alto (ej: 6.100.000 en vez de 61.000)
-        // y sabemos que ese cliente suele manejar miles, podrías aplicar una regla, 
-        // pero con la lógica de arriba ya debería separar 61.000 de 10.000.000.
         
         return { ...t, valor: v };
     }).sort((a, b) => (a.año - b.año) || (obtenerMesNumero(a.mes) - obtenerMesNumero(b.mes)));
 
+    // Filtrar para mostrar en la tabla según selección
     const fila = datosClienteActual.filter(t => t.mes === mes && t.año === anio);
     const cuerpo = document.getElementById("cuerpo-tabla");
-    cuerpo.innerHTML = fila.map(i => `<tr><td>${i.cliente}</td><td>${i.servicio}</td><td>ACTIVO</td><td>1</td><td>${i.mes}</td><td>${i.año}</td><td>$${i.valor.toLocaleString('es-AR')}</td></tr>`).join('');
+    
+    if (fila.length === 0) {
+        cuerpo.innerHTML = `<tr><td colspan="7" style="text-align:center;">No hay datos para el mes/año seleccionado</td></tr>`;
+    } else {
+        cuerpo.innerHTML = fila.map(i => `
+            <tr>
+                <td>${i.cliente}</td>
+                <td>${i.servicio}</td>
+                <td>ACTIVO</td>
+                <td>1</td>
+                <td>${i.mes}</td>
+                <td>${i.año}</td>
+                <td>$${i.valor.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</td>
+            </tr>`).join('');
+    }
 });
-// --- BOTÓN ANALIZAR ---
-// --- BOTÓN ANALIZAR COMPLETO (ANUAL, SEMESTRAL, TRIMESTRAL) ---
+
+// --- BOTÓN ANALIZAR: FILTRA SOLO PARA GRÁFICOS Y KPI ---
 document.getElementById("btn-analizar").addEventListener("click", () => {
     const anioSel = document.getElementById("filtro-anio-kpi").value;
     const anioAnt = (parseInt(anioSel) - 1).toString();
 
-    // 1. Datos reales del año seleccionado
-    const datosRealesAnio = datosClienteActual.filter(d => d.año === anioSel)
+    // --- FILTRO CLAVE: Solo tomamos el concepto base para el análisis técnico ---
+    const datosFiltradosParaAnalisis = datosClienteActual.filter(d => 
+        d.servicio.trim() === "Monitoreo Satelital Pasivo"
+    );
+
+    // 1. Datos reales del año seleccionado (del concepto filtrado)
+    const datosRealesAnio = datosFiltradosParaAnalisis.filter(d => d.año === anioSel)
         .sort((a, b) => obtenerMesNumero(a.mes) - obtenerMesNumero(b.mes));
 
-    if (datosRealesAnio.length === 0) return alert("No hay datos para este año");
+    if (datosRealesAnio.length === 0) {
+        return alert("No hay datos de 'Monitoreo Satelital Pasivo' para este año.");
+    }
 
-    // 2. Base de cálculo (Diciembre anterior)
-    const dicAnt = datosClienteActual.find(d => d.año === anioAnt && d.mes === "diciembre");
+    // 2. Base de cálculo (Diciembre anterior del concepto filtrado)
+    const dicAnt = datosFiltradosParaAnalisis.find(d => d.año === anioAnt && d.mes === "diciembre");
     const vBaseReal = dicAnt ? dicAnt.valor : datosRealesAnio[0].valor;
 
     // 3. Valores para las variaciones
@@ -121,20 +135,16 @@ document.getElementById("btn-analizar").addEventListener("click", () => {
     const mesFinalIdx = obtenerMesNumero(ultimoDato.mes);
     const mesesTranscurridos = mesFinalIdx + 1;
 
-    // --- CÁLCULO DE VARIACIONES PROPIAS ---
-// --- CÁLCULO DE VARIACIONES PROPIAS (CORREGIDO PARA EVITAR INFINITY) ---
-    
-    // Anual: Si no existe vBaseReal o es 0 (cliente nuevo), la variación es 0
+    // --- CÁLCULO DE VARIACIONES PROPIAS (EVITANDO INFINITY) ---
     const varAnual = (vBaseReal > 0) ? ((vFinal - vBaseReal) / vBaseReal) * 100 : 0;
     
-    // Semestral: Si no existe vJun o es 0, la variación es 0
     const vJun = (datosRealesAnio.find(d => d.mes === "junio") || {}).valor;
     const varSemestre = (vJun > 0 && mesFinalIdx >= 5) ? ((vFinal - vJun) / vJun) * 100 : 0;
     
-    // Trimestral: Si no existe vSep o es 0, la variación es 0
     const vSep = (datosRealesAnio.find(d => d.mes === "septiembre") || {}).valor;
     const varTrimestre = (vSep > 0 && mesFinalIdx >= 8) ? ((vFinal - vSep) / vSep) * 100 : 0;
-    // Actualizar UI de variaciones
+
+    // Actualizar UI
     document.getElementById("var-12meses").innerText = varAnual.toFixed(1) + "%";
     document.getElementById("var-6meses").innerText = varSemestre.toFixed(1) + "%";
     document.getElementById("var-3meses").innerText = varTrimestre.toFixed(1) + "%";
@@ -146,7 +156,7 @@ document.getElementById("btn-analizar").addEventListener("click", () => {
     actualizarKPI("kpi-brecha-ipc", "card-brecha-ipc", varAnual - infMkt, infMkt);
     actualizarKPI("kpi-brecha-salarios", "card-brecha-salarios", varAnual - salMkt, salMkt);
 
-    // --- PREPARAR GRÁFICO (CON MEMORIA) ---
+    // --- PREPARAR GRÁFICO (CON DATOS FILTRADOS) ---
     let datosParaGraficar = [...datosRealesAnio];
     if (dicAnt) {
         datosParaGraficar.unshift({ 
