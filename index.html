@@ -125,7 +125,11 @@
         <i class="fas fa-chart-line"></i> ANALIZAR HISTORIAL
     </button>
 </div>
-
+<div id="botones-rango-container" style="margin-bottom: 20px;">
+    <button class="btn-rango" onclick="filtrarPorRango(3)">Últimos 3 Meses</button>
+    <button class="btn-rango" onclick="filtrarPorRango(6)">Últimos 6 Meses</button>
+    <button class="btn-rango activo" onclick="filtrarPorRango(12)">Año Completo</button>
+</div>
     <div id="semaforo-alerta" class="semaforo-mini semaforo-oculto">
         <span id="semaforo-icono"></span>
         <span id="semaforo-texto"></span>
