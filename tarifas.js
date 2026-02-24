@@ -397,17 +397,18 @@ document.getElementById("btn-exportar").addEventListener("click", () => {
     const fechaActual = new Date().toISOString().slice(0, 10);
 
     // 3. Configuración del PDF
-    const opciones = {
-        margin:       [0.5, 0.5], // Márgenes [arriba/abajo, izquierda/derecha]
-        filename:     `Reporte_${nombreCliente}_${anioAnalizado}_${fechaActual}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { 
-            scale: 2,           // Mayor resolución
-            useCORS: true,      // Evita problemas con imágenes externas
-            letterRendering: true
-        },
-        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
+// BUSCA ESTO EN TU FUNCIÓN DE EXPORTAR:
+const opciones = {
+    margin:       [0.5, 0.5], 
+    filename:     `Reporte_${nombreCliente}.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true },
+    jsPDF:        { 
+        unit: 'in', 
+        format: 'a4', 
+        orientation: 'landscape' // <--- CAMBIA ESTO (Horizontal)
+    }
+};
 
     // 4. Ejecutar la descarga
     // Ocultamos temporalmente los botones para que no salgan en el PDF

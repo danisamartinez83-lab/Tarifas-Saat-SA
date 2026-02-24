@@ -293,24 +293,36 @@ select {
 
 /* --- CONFIGURACIÓN PARA EL PDF --- */
 @media print {
-    .app-container { width: 100% !important; margin: 0 !important; padding: 0 !important; }
-    
-    /* Ocultar elementos innecesarios */
-    .filtros-card, .btn-group, .seccion-analisis-inline, #botones-rango-container, #btn-cargar-servicios {
-        display: none !important;
+    /* Aprovechar todo el ancho de la hoja horizontal */
+    .app-container { 
+        width: 100% !important; 
+        max-width: none !important; 
+        margin: 0 !important; 
+        padding: 10px !important; 
     }
 
-    /* Forzar apilado vertical en PDF */
+    /* La tabla ahora puede ser ancha y cómoda */
+    #tabla-tarifas {
+        width: 100% !important;
+        font-size: 11px !important; /* Letra legible */
+    }
+
+    /* En horizontal, los gráficos pueden volver a estar a la par */
     .contenedor-graficos {
-        display: block !important;
+        display: flex !important;
+        flex-direction: row !important; /* Uno al lado del otro */
+        gap: 15px !important;
     }
 
     .tarjeta-grafico {
-        display: block !important;
-        width: 100% !important;
-        margin-bottom: 40px !important;
+        flex: 1 !important;
+        min-width: 0 !important; /* Quitar restricción de ancho */
+        height: 380px !important;
         page-break-inside: avoid;
-        box-shadow: none !important;
-        border: 1px solid #ddd !important;
+    }
+
+    /* Ocultar lo que no sirve */
+    .filtros-card, .btn-group, .seccion-analisis-inline, #botones-rango-container {
+        display: none !important;
     }
 }
