@@ -87,24 +87,10 @@ select {
     border: none;
 }
 
-#btn-buscar {
-    background-color: #444;
-    color: white;
-}
-
-#btn-buscar:hover {
-    background-color: #ff6600;
-}
-
-#btn-exportar {
-    background-color: #add8e6;
-    color: #333;
-    white-space: nowrap;
-}
-
-#btn-exportar:hover {
-    background-color: #87ceeb;
-}
+#btn-buscar { background-color: #444; color: white; }
+#btn-buscar:hover { background-color: #ff6600; }
+#btn-exportar { background-color: #add8e6; color: #333; white-space: nowrap; }
+#btn-exportar:hover { background-color: #87ceeb; }
 
 /* --- TABLA Y SCROLL --- */
 .tabla-container {
@@ -128,11 +114,7 @@ select {
     min-width: 800px;
 }
 
-#tabla-tarifas thead {
-    background-color: #666;
-    color: white;
-}
-
+#tabla-tarifas thead { background-color: #666; color: white; }
 #tabla-tarifas th, #tabla-tarifas td {
     padding: 15px;
     text-align: left;
@@ -140,14 +122,8 @@ select {
     white-space: nowrap;
 }
 
-#tabla-tarifas tr:hover {
-    background-color: #fff5ee;
-}
-
-#tabla-tarifas td:last-child {
-    color: #ff6600;
-    font-weight: bold;
-}
+#tabla-tarifas tr:hover { background-color: #fff5ee; }
+#tabla-tarifas td:last-child { color: #ff6600; font-weight: bold; }
 
 /* --- DASHBOARD KPIS --- */
 .dashboard-kpis {
@@ -200,14 +176,6 @@ select {
     min-width: 140px;
 }
 
-.seccion-analisis-inline .control-grupo label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #666;
-}
-
 #filtro-anio-kpi, #filtro-servicio {
     padding: 10px;
     border: 1px solid #ccc;
@@ -234,19 +202,7 @@ select {
     min-width: 160px;
 }
 
-#btn-cargar-servicios {
-    background-color: #666; 
-}
-
-#btn-cargar-servicios:hover {
-    background-color: #444;
-}
-
-.btn-naranja-suave:hover {
-    background-color: #ffb167;
-}
-
-/* --- BOTONES DE RANGO (CENTRADO) --- */
+/* --- BOTONES DE RANGO --- */
 #botones-rango-container {
     display: flex;
     justify-content: center; 
@@ -270,17 +226,12 @@ select {
     text-align: center;
 }
 
-.btn-rango:hover {
-    background: #fff5ee;
-}
-
 .btn-rango.activo {
     background-color: #ff6600 !important;
     color: white !important;
-    box-shadow: 0 2px 5px rgba(255, 102, 0, 0.4);
 }
 
-/* --- GRÁFICOS (AJUSTE DE ENCUADRE) --- */
+/* --- GRÁFICOS --- */
 .contenedor-graficos {
     display: flex;
     flex-wrap: wrap;
@@ -311,46 +262,43 @@ select {
 @media (max-width: 768px) {
     body { padding: 10px; }
     .seccion-analisis-inline { flex-direction: column; align-items: stretch; padding: 15px; }
-    .btn-naranja-suave { width: 100%; min-width: 100%; }
     .dashboard-kpis { grid-template-columns: 1fr 1fr; }
-    .tarjeta-grafico { min-width: 100%; margin: 0; }
+    .tarjeta-grafico { min-width: 100%; }
     .canvas-container { height: 280px; }
     .btn-rango { flex: 1; font-size: 0.75rem; padding: 8px 5px; }
 }
 
-/* --- CORRECCIÓN DE EXPORTACIÓN (ESTO ARREGLA TU PDF) --- */
+/* --- CONFIGURACIÓN DE IMPRESIÓN (ARRIBA Y ABAJO) --- */
 @media print {
-    /* Mantenemos tus ocultos anteriores y sumamos los nuevos */
+    body { background-color: white !important; padding: 0 !important; }
+    .app-container { max-width: 100% !important; margin: 0 !important; }
+    
     .filtros-card, .btn-group, .seccion-analisis-inline, .btn-rango, #botones-rango-container {
         display: none !important;
     }
 
-    /* Forzamos que la tabla NO tenga scroll para que salgan todos los conceptos */
-    .table-scroll { 
-        overflow: visible !important; 
-        border: none !important; 
+    /* Tabla expandida */
+    .table-scroll { overflow: visible !important; border: none !important; display: block !important; }
+    #tabla-tarifas { width: 100% !important; min-width: 100% !important; }
+
+    /* FORZAR GRÁFICOS UNO ABAJO DEL OTRO */
+    .contenedor-graficos { 
+        display: block !important; /* Desactiva el Flexbox */
+        width: 100% !important;
     }
     
-    #tabla-tarifas { 
-        min-width: 100% !important; 
-        width: 100% !important; 
-        font-size: 10pt !important;
-    }
-
-    /* Gráficos: Evitamos que se encimen poniéndolos uno bajo el otro */
-    .contenedor-graficos { 
-        display: block !important; 
-    }
-
     .tarjeta-grafico { 
+        display: block !important; 
         width: 100% !important; 
-        margin-bottom: 40px !important; 
+        margin-bottom: 50px !important; /* Espacio extra entre ellos */
+        page-break-inside: avoid !important;
         box-shadow: none !important;
         border: 1px solid #eee !important;
-        page-break-inside: avoid; /* Evita que el gráfico se corte entre páginas */
+        clear: both !important; /* Asegura que no haya nada al lado */
     }
 
     .canvas-container { 
-        height: 300px !important; 
+        height: 400px !important; /* Altura fija para impresión */
+        width: 100% !important; 
     }
 }
