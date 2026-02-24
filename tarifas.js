@@ -60,21 +60,44 @@ function calcularAcumuladoMercado(anio, tipo, mesesAtras) {
 }
 
 // --- BOTONES ---
+// --- BOTONES (CORREGIDO PARA MILLONES) ---
 document.getElementById("btn-buscar").addEventListener("click", () => {
     const cli = document.getElementById("filtro-cliente").value;
     const mes = document.getElementById("filtro-mes").value.toLowerCase();
     const anio = document.getElementById("filtro-año").value;
-    if (!cli) return alert("Seleccione un cliente");
-      datosClienteActual = listaTarifas.filter(t => t.cliente === cli).map(t => {
-    // Limpieza profunda de caracteres no numéricos
-         let n = (t.tarifa || "0").replace(/[^0-9,.]/g, '');
-        let v = parseFloat(n.replace(/\./g, '').replace(',', '.')) || 0;
-        return { ...t, valor: v > 5000000 ? v / 100 : v };
-    }).sort((a,b) => (a.año - b.año) || (obtenerMesNumero(a.mes) - obtenerMesNumero(b.mes)));
 
+    if (!cli) return alert("Seleccione un cliente");
+
+    datosClienteActual = listaTarifas.filter(t => t.cliente === cli).map(t => {
+        // 1. Limpieza profunda: eliminamos símbolos de peso, espacios y basura
+        let n = (t.tarifa || "0").replace(/[^0-9,.]/g, '');
+
+        // 2. Conversión a número: quitamos puntos de miles y pasamos coma a punto decimal
+        let v = parseFloat(n.replace(/\./g, '').replace(',', '.')) || 0;
+
+        // 3. Retornamos el valor real sin condiciones de división (eliminado v > 5000000)
+        return { ...t, valor: v };
+    }).sort((a, b) => (a.año - b.año) || (obtenerMesNumero(a.mes) - obtenerMesNumero(b.mes)));
+
+    // Filtrar para la tabla según el mes y año seleccionados
     const fila = datosClienteActual.filter(t => t.mes === mes && t.año === anio);
     const cuerpo = document.getElementById("cuerpo-tabla");
-    cuerpo.innerHTML = fila.map(i => `<tr><td>${i.cliente}</td><td>${i.servicio}</td><td>ACTIVO</td><td>1</td><td>${i.mes}</td><td>${i.año}</td><td>$${i.valor.toLocaleString()}</td></tr>`).join('');
+
+    if (fila.length === 0) {
+        cuerpo.innerHTML = `<tr><td colspan="7" style="text-align:center;">No hay datos para el mes/año seleccionado</td></tr>`;
+    } else {
+        cuerpo.innerHTML = fila.map(i => `
+            <tr>
+                <td>${i.cliente}</td>
+                <td>${i.servicio}</td>
+                <td>ACTIVO</td>
+                <td>1</td>
+                <td>${i.mes}</td>
+                <td>${i.año}</td>
+                <td>$${i.valor.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</td>
+            </tr>
+        `).join('');
+    }
 });
 // --- BOTÓN ANALIZAR ---
 // --- BOTÓN ANALIZAR COMPLETO (ANUAL, SEMESTRAL, TRIMESTRAL) ---
