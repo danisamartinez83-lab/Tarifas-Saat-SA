@@ -58,109 +58,99 @@
         </section>
 
         <section class="tabla-container">
-    <div class="table-scroll"> <table id="tabla-tarifas">
-            <thead>
-                <tr>
-                    <th>Cliente</th>
-                    <th>Servicio</th>
-                    <th>Estado</th>
-                    <th>Unidades</th>
-                    <th>Mes</th>
-                    <th>Año</th>
-                    <th>Tarifa</th>
-                </tr>
-            </thead>
-            <tbody id="cuerpo-tabla">
-                </tbody>
-        </table>
-    </div>
-</section>
-        
-<div class="dashboard-kpis">
-   
-
-    <div class="kpi-card">
-        <span class="kpi-label">Var. Trimestral (Propia)</span>
-        <span id="var-3meses" class="kpi-value">--</span>
-    </div>
-    <div class="kpi-card">
-        <span class="kpi-label">Var. Semestral (Propia)</span>
-        <span id="var-6meses" class="kpi-value">--</span>
-    </div>
-    <div class="kpi-card">
-        <span class="kpi-label">Var. Anual (Propia)</span>
-        <span id="var-12meses" class="kpi-value">--</span>
-    </div>
-     <div class="kpi-card" id="card-brecha-ipc">
-        <span class="kpi-label">Brecha vs Inflación</span>
-        <span id="kpi-brecha-ipc" class="kpi-value">--</span>
-    </div>
-    
-    <div class="kpi-card" id="card-brecha-salarios">
-        <span class="kpi-label">Brecha vs Salarios</span>
-        <span id="kpi-brecha-salarios" class="kpi-value">--</span>
-    </div>
-</div>
-<div class="seccion-analisis-inline">
-    <div class="control-grupo">
-        <label>1. Seleccionar Año:</label>
-        <select id="filtro-anio-kpi">
-             <option value="2026">2026</option> 
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-        </select>
-    </div>
-
-    <div class="control-grupo">
-        <label>2. Servicio:</label>
-        <select id="filtro-servicio" style="width: 200px;">
-            <option value="">Primero busque cliente</option>
-        </select>
-    </div>
-
-    <button id="btn-cargar-servicios" class="btn-naranja-suave" style="background-color: #666; border-color: #666;">
-        <i class="fas fa-sync-alt"></i> CARGAR CONCEPTOS
-    </button>
-
-    <button id="btn-analizar" class="btn-naranja-suave">
-        <i class="fas fa-chart-line"></i> ANALIZAR HISTORIAL
-    </button>
-</div>
-<div id="botones-rango-container" style="margin-bottom: 20px;">
-    <button class="btn-rango" onclick="filtrarPorRango(3)">Últimos 3 Meses</button>
-    <button class="btn-rango" onclick="filtrarPorRango(6)">Últimos 6 Meses</button>
-    <button class="btn-rango activo" onclick="filtrarPorRango(12)">Año Completo</button>
-</div>
-    <div id="semaforo-alerta" class="semaforo-mini semaforo-oculto">
-        <span id="semaforo-icono"></span>
-        <span id="semaforo-texto"></span>
-    </div>
-</div>
-<div class="contenedor-graficos">
-    <div class="tarjeta-grafico">
-        <h3 class="titulo-seccion">Evolución vs Inflación (Pesos)</h3>
-        <div class="canvas-container">
-            <canvas id="graficoVariacion"></canvas>
-        </div>
-    </div>
-
-    <div class="tarjeta-grafico">
-        <h3 class="titulo-seccion">Crecimiento vs Salarios (Porcentaje)</h3>
-        <div class="canvas-container">
-            <canvas id="graficoEstructura"></canvas>
-        </div>
-    </div>
-</div>
+            <div class="table-scroll">
+                <table id="tabla-tarifas">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Servicio</th>
+                            <th>Estado</th>
+                            <th>Unidades</th>
+                            <th>Mes</th>
+                            <th>Año</th>
+                            <th>Tarifa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpo-tabla"></tbody>
+                </table>
+            </div>
         </section>
-    </div>
+        
+        <div class="dashboard-kpis">
+            <div class="kpi-card">
+                <span class="kpi-label">Var. Trimestral (Propia)</span>
+                <span id="var-3meses" class="kpi-value">--</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">Var. Semestral (Propia)</span>
+                <span id="var-6meses" class="kpi-value">--</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">Var. Anual (Propia)</span>
+                <span id="var-12meses" class="kpi-value">--</span>
+            </div>
+            <div class="kpi-card" id="card-brecha-ipc">
+                <span class="kpi-label">Brecha vs Inflación</span>
+                <span id="kpi-brecha-ipc" class="kpi-value">--</span>
+            </div>
+            <div class="kpi-card" id="card-brecha-salarios">
+                <span class="kpi-label">Brecha vs Salarios</span>
+                <span id="kpi-brecha-salarios" class="kpi-value">--</span>
+            </div>
+        </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+        <div class="seccion-analisis-inline">
+            <div class="control-grupo">
+                <label>1. Seleccionar Año:</label>
+                <select id="filtro-anio-kpi">
+                    <option value="2026">2026</option> 
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                </select>
+            </div>
+            <div class="control-grupo">
+                <label>2. Servicio:</label>
+                <select id="filtro-servicio" style="width: 200px;">
+                    <option value="">Primero busque cliente</option>
+                </select>
+            </div>
+            <button id="btn-cargar-servicios" class="btn-naranja-suave" style="background-color: #666; border-color: #666;">
+                CARGAR CONCEPTOS
+            </button>
+            <button id="btn-analizar" class="btn-naranja-suave">
+                ANALIZAR HISTORIAL
+            </button>
+        </div>
+
+        <div id="botones-rango-container" style="margin-bottom: 20px;">
+            <button class="btn-rango" onclick="filtrarPorRango(3)">Últimos 3 Meses</button>
+            <button class="btn-rango" onclick="filtrarPorRango(6)">Últimos 6 Meses</button>
+            <button class="btn-rango activo" onclick="filtrarPorRango(12)">Año Completo</button>
+        </div>
+
+        <div id="semaforo-alerta" class="semaforo-mini semaforo-oculto">
+            <span id="semaforo-icono"></span>
+            <span id="semaforo-texto"></span>
+        </div>
+
+        <div class="contenedor-graficos">
+            <div class="tarjeta-grafico">
+                <h3 class="titulo-seccion">Evolución vs Inflación (Pesos)</h3>
+                <div class="canvas-container">
+                    <canvas id="graficoVariacion"></canvas>
+                </div>
+            </div>
+
+            <div class="tarjeta-grafico">
+                <h3 class="titulo-seccion">Crecimiento vs Salarios (Porcentaje)</h3>
+                <div class="canvas-container">
+                    <canvas id="graficoEstructura"></canvas>
+                </div>
+            </div>
+        </div>
+    </div> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="tarifas.js"></script>
     <script src="script.js"></script>
-    <canvas id="graficoTarifas"></canvas>
-<canvas id="graficoSalarios"></canvas>
-   </div>
-   </div>
 </body>
 </html>
