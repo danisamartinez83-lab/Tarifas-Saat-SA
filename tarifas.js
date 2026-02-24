@@ -108,21 +108,23 @@ document.getElementById("btn-buscar").addEventListener("click", () => {
 });
 
 // --- BOTÓN ANALIZAR: FILTRA SOLO PARA GRÁFICOS Y KPI ---
+// --- BOTÓN ANALIZAR: FILTRA POR PALABRA CLAVE "PASIVO" ---
 document.getElementById("btn-analizar").addEventListener("click", () => {
     const anioSel = document.getElementById("filtro-anio-kpi").value;
     const anioAnt = (parseInt(anioSel) - 1).toString();
 
-    // --- FILTRO CLAVE: Solo tomamos el concepto base para el análisis técnico ---
-    const datosFiltradosParaAnalisis = datosClienteActual.filter(d => 
-        d.servicio.trim() === "Monitoreo Satelital Pasivo"
-    );
+    // --- FILTRO INTELIGENTE: Busca cualquier servicio que incluya la palabra "Pasivo" ---
+    const datosFiltradosParaAnalisis = datosClienteActual.filter(d => {
+        const nombreServicio = (d.servicio || "").toLowerCase();
+        return nombreServicio.includes("pasivo"); 
+    });
 
     // 1. Datos reales del año seleccionado (del concepto filtrado)
     const datosRealesAnio = datosFiltradosParaAnalisis.filter(d => d.año === anioSel)
         .sort((a, b) => obtenerMesNumero(a.mes) - obtenerMesNumero(b.mes));
 
     if (datosRealesAnio.length === 0) {
-        return alert("No hay datos de 'Monitoreo Satelital Pasivo' para este año.");
+        return alert("No se encontraron conceptos que contengan la palabra 'Pasivo' para este año.");
     }
 
     // 2. Base de cálculo (Diciembre anterior del concepto filtrado)
@@ -156,7 +158,7 @@ document.getElementById("btn-analizar").addEventListener("click", () => {
     actualizarKPI("kpi-brecha-ipc", "card-brecha-ipc", varAnual - infMkt, infMkt);
     actualizarKPI("kpi-brecha-salarios", "card-brecha-salarios", varAnual - salMkt, salMkt);
 
-    // --- PREPARAR GRÁFICO (CON DATOS FILTRADOS) ---
+    // --- PREPARAR GRÁFICO ---
     let datosParaGraficar = [...datosRealesAnio];
     if (dicAnt) {
         datosParaGraficar.unshift({ 
