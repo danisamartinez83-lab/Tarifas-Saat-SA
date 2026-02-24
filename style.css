@@ -1,7 +1,7 @@
-/* Configuración General */
+/* --- CONFIGURACIÓN GENERAL --- */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0; /* Gris muy clarito de fondo */
+    background-color: #f0f0f0;
     color: #444;
     margin: 0;
     padding: 20px;
@@ -12,7 +12,7 @@ body {
     margin: 0 auto;
 }
 
-/* Header y Logo */
+/* --- HEADER Y LOGO --- */
 header {
     text-align: center;
     margin-bottom: 40px;
@@ -20,31 +20,30 @@ header {
 }
 
 .logo {
-    max-width: 180px;          /* Ajustamos el tamaño un poco más grande */
-    background-color: white;   /* Fondo blanco para el óvalo */
-    padding: 15px 35px;        /* Más espacio a los lados para formar el óvalo */
-    border-radius: 100px;      /* Esto crea la forma ovalada */
-    border: 2px solid #ff6600; /* Borde naranja fino para resaltar */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Una pequeña sombra para dar relieve */
-    display: block;            /* Asegura que respete los márgenes */
-    margin: 0 auto 15px auto;  /* Centrado horizontal y espacio abajo */
+    max-width: 180px;
+    background-color: white;
+    padding: 15px 35px;
+    border-radius: 100px;
+    border: 2px solid #ff6600;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: block;
+    margin: 0 auto 15px auto;
 }
 
-
 header h1 {
-    color: #ff6600; /* NARANJA para el título */
+    color: #ff6600;
     font-size: 2.5rem;
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
-/* Tarjeta de Filtros */
+/* --- TARJETA DE FILTROS --- */
 .filtros-card {
     background: #ffffff;
     padding: 30px;
     border-radius: 8px;
-    border-top: 5px solid #ff6600; /* Línea naranja superior */
+    border-top: 5px solid #ff6600;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     margin-bottom: 30px;
 }
@@ -60,7 +59,7 @@ header h1 {
     display: block;
     font-weight: bold;
     margin-bottom: 8px;
-    color: #666; /* Gris para etiquetas */
+    color: #666;
 }
 
 select {
@@ -71,214 +70,97 @@ select {
     background-color: #fafafa;
 }
 
-/* Botón Buscar */
-#btn-buscar {
-    width: 100%;
-    background-color: #444; /* Gris oscuro para el botón */
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-/* Contenedor para alinear botones */
+/* --- BOTONES --- */
 .btn-group {
     display: flex;
-    gap: 10px; /* Espacio entre los dos botones */
+    gap: 10px;
 }
 
-/* Estilo para el botón de Exportar (Celeste Claro) */
-#btn-exportar {
-    flex: 1; /* Para que tengan el mismo ancho */
-    background-color: #add8e6; /* Celeste claro (LightBlue) */
-    color: #333; /* Texto oscuro para que se lea bien */
-    border: none;
+#btn-buscar, #btn-exportar, .btn-secundario {
+    flex: 1;
     padding: 12px;
     border-radius: 4px;
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
-    white-space: nowrap; /* Evita que el texto se parta en dos líneas */
+    border: none;
+    text-align: center;
+}
+
+#btn-buscar {
+    background-color: #444;
+    color: white;
+}
+
+#btn-buscar:hover {
+    background-color: #ff6600;
+}
+
+#btn-exportar {
+    background-color: #add8e6;
+    color: #333;
+    white-space: nowrap;
 }
 
 #btn-exportar:hover {
-    background-color: #87ceeb; /* Un celeste un poquito más fuerte al pasar el mouse */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: #87ceeb;
 }
 
-/* Ajuste al botón buscar para que compartan el espacio */
-#btn-buscar {
-    flex: 1;
-}
-#btn-buscar:hover {
-    background-color: #ff6600; /* Se vuelve naranja al pasar el mouse */
-}
 .btn-secundario {
     background-color: #f5f5f5;
     color: #333;
     border: 1px solid #ccc;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
 }
 
-.btn-secundario:hover {
-    background-color: #e0e0e0;
-}
-/* Tabla */
+/* --- TABLA (SOLUCIÓN SCROLL MÓVIL) --- */
 .tabla-container {
     background: white;
     border-radius: 8px;
-    overflow: hidden;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-thead {
-    background-color: #666; /* Gris medio para cabecera de tabla */
-    color: white;
-}
-
-th, td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-tr:hover {
-    background-color: #fff5ee; /* Un tono naranja muy suave al pasar por la fila */
-}
-
-/* Resaltar la Tarifa */
-td:last-child {
-    color: #ff6600;
-    font-weight: bold;
-}
-.dashboard-container {
-    margin-top: 40px;
     margin-bottom: 30px;
 }
 
-.card-grafico {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    height: 400px; /* Altura fija para el gráfico */
+.table-scroll {
+    width: 100%;
+    overflow-x: auto; /* Activa scroll horizontal */
+    display: block;
+    -webkit-overflow-scrolling: touch;
 }
 
-.card-grafico h3 {
-    color: #444;
-    margin-top: 0;
-    border-bottom: 2px solid #ff6600;
-    display: inline-block;
-    padding-bottom: 5px;
-}
-.rango-botones {
-    margin-bottom: 20px;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
+#tabla-tarifas {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px; /* Fuerza el ancho para que aparezca el scroll en celulares */
 }
 
-.btn-rango {
-    background: white;
-    border: 1px solid #ff6600;
+#tabla-tarifas thead {
+    background-color: #666;
+    color: white;
+}
+
+#tabla-tarifas th, 
+#tabla-tarifas td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+}
+
+#tabla-tarifas tr:hover {
+    background-color: #fff5ee;
+}
+
+/* Resaltar la Tarifa (Última celda) */
+#tabla-tarifas td:last-child {
     color: #ff6600;
-    padding: 5px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: 0.2s;
-    margin-right: 5px;
+    font-weight: bold;
 }
 
-.btn-rango:hover {
-    background: #ff6600;
-    color: white;
-}
-
-.control-grupo {
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.btn-rango.activo {
-    background-color: #444;
-    color: white;
-}
-.semaforo-mini {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin-left: 15px;
-    border: 1px solid transparent;
-}
-
-.alerta-roja { background-color: #fff1f0; color: #cf1322; border-color: #ffa39e; }
-.alerta-amarilla { background-color: #fffbe6; color: #d48806; border-color: #ffe58f; }
-.alerta-verde { background-color: #f6ffed; color: #389e0d; border-color: #b7eb8f; }
-
-.semaforo-oculto { display: none; }
-/* Estilos para el interruptor de modo */
-.modo-comparacion {
-    margin-right: 20px;
-}
-
-.toggle-container {
-    display: inline-flex;
-    background: #f0f0f0; /* Gris claro de fondo */
-    border-radius: 20px;
-    padding: 3px;
-    border: 1px solid #ccc;
-}
-
-.toggle-container input[type="radio"] {
-    display: none; /* Ocultamos los radios originales */
-}
-
-.btn-toggle {
-    padding: 6px 15px;
-    border-radius: 18px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    color: #666;
-}
-
-/* Estilo del botón seleccionado */
-.toggle-container input[type="radio"]:checked + .btn-toggle {
-    background: #ff6600; /* Naranja corporativo */
-    color: white;
-    box-shadow: 0 2px 5px rgba(255, 102, 0, 0.3);
-}
-
-/* Ajuste para que los controles se vean bien en una fila */
-.controles-grafico {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 20px;
-}
+/* --- DASHBOARD Y KPIS --- */
 .dashboard-kpis {
-    margin-top: 10px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
     margin-bottom: 25px;
 }
 
@@ -286,94 +168,32 @@ td:last-child {
     background: white;
     padding: 15px;
     border-radius: 8px;
-    border-left: 5px solid #ff6600; /* Color corporativo */
+    border-left: 5px solid #ff6600;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     text-align: center;
+    border-top: 1px solid #eee;
 }
 
 .kpi-label {
     display: block;
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 5px;
-}
-
-.kpi-value {
-    display: block;
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #333;
-}
-
-.sube { color: #28a745; } /* Verde si subió */
-.baja { color: #dc3545; } /* R
-/* Layout para los dos gráficos */
-.contenedor-graficos {
-    display: flex;
-    flex-wrap: wrap; /* Para que en móviles se pongan uno abajo del otro */
-    gap: 20px;
-    margin-top: 20px;
-    width: 100%;
-}
-
-.tarjeta-grafico {
-    flex: 1; /* Hace que ambos ocupen el mismo ancho */
-    min-width: 350px; /* Evita que se vuelvan demasiado flacos */
-    background: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.tarjeta-grafico h3 {
-    text-align: center;
-    color: #444;
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-}
-
-/* Importante para que Chart.js no se deforme */
-.canvas-container {
-    position: relative;
-    height: 350px; /* Altura fija para los gráficos */
-    width: 100%;
-}
-.dashboard-kpis {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.kpi-card {
-    background: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-top: 4px solid #ddd; /* Color neutro inicial */
-}
-
-.kpi-label {
-    font-size: 0.75rem;
     color: #888;
+    font-size: 0.75rem;
     text-transform: uppercase;
     margin-bottom: 8px;
-    text-align: center;
 }
 
 .kpi-value {
+    display: block;
     font-size: 1.5rem;
     font-weight: bold;
     color: #333;
 }
-/* Contenedor principal para poner todo en una fila */
+
+/* --- SECCIÓN ANÁLISIS --- */
 .seccion-analisis-inline {
     display: flex;
-    align-items: flex; /* Alinea el botón con la base del select */
-    gap: 15px;            /* Espacio entre select y botón */
+    align-items: center;
+    gap: 15px;
     background: #f9f9f9;
     padding: 15px;
     border-radius: 8px;
@@ -381,82 +201,74 @@ td:last-child {
     margin: 15px 0;
 }
 
-
-
-.control-grupo label {
-    font-size: 12px;
-    margin-bottom: 5px;
-    color: #666;
-}
-
-#filtro-anio-kpi {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background: white;
-}
-
-/* Botón Naranja Suave */
 .btn-naranja-suave {
-    flex: 1; /* El botón ocupa el mismo ancho que el select */
+    flex: 1;
     padding: 10px;
-    background-color: #ff9f43; /* Naranja pastel / suave */
+    background-color: #ff9f43;
     color: white;
-    border: 1px solid #ff9f43;
+    border: none;
     border-radius: 5px;
     font-weight: 600;
     cursor: pointer;
-    height: 40px; /* Misma altura que el select */
-    transition: background 0.3s;
+    height: 40px;
+    transition: 0.3s;
     text-transform: uppercase;
     font-size: 13px;
 }
 
 .btn-naranja-suave:hover {
-    background-color: #ffb167; /* Un tono un poco más claro al pasar el mouse */
+    background-color: #ffb167;
 }
 
-.btn-naranja-suave i {
-    margin-right: 8%;
-}
-.graficos-container { page-break-before: always; }
-/* Esto fuerza que el contenedor de gráficos empiece en hoja nueva al exportar */
-.graficos-seccion {
-    page-break-before: always;
-}
-
-/* Ocultar elementos innecesarios en el PDF como el selector de año y botones */
-@media print {
-    .filtros, .botones-accion, #btn-exportar, .selector-grafico {
-        display: none !important;
-    }
-}
-/* Esto permite que la tabla se deslice de lado en el celular */
-.table-scroll {
+/* --- GRÁFICOS --- */
+.contenedor-graficos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
     width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border: 1px solid #ddd;
+}
+
+.tarjeta-grafico {
+    flex: 1;
+    min-width: 350px;
+    background: #ffffff;
+    padding: 15px;
     border-radius: 8px;
-    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* Evita que los textos se amontonen o se corten */
-#tabla-tarifas {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 600px; /* Obliga a la tabla a mantener un ancho mínimo para que sea legible */
-}
-
-#tabla-tarifas th, #tabla-tarifas td {
-    white-space: nowrap; /* Evita que el texto salte de línea */
-    padding: 12px 8px;
-    text-align: left;
-}
-
-/* Ajuste para que los gráficos no se vean gigantes en celular */
 .canvas-container {
     position: relative;
-    height: 300px; 
+    height: 350px;
     width: 100%;
+}
+
+/* --- RESPONSIVE (CELULARES) --- */
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    
+    header h1 { font-size: 1.8rem; }
+    
+    .grid-filtros { grid-template-columns: 1fr; }
+    
+    .dashboard-kpis {
+        grid-template-columns: 1fr 1fr; /* KPIs de a dos */
+    }
+
+    .seccion-analisis-inline {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tarjeta-grafico {
+        min-width: 100%;
+    }
+}
+
+/* --- EXPORTACIÓN PDF --- */
+@media print {
+    .filtros-card, .seccion-analisis-inline, #btn-exportar {
+        display: none !important;
+    }
 }
