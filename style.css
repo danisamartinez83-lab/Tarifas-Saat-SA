@@ -255,68 +255,65 @@ select {
     color: white !important;
 }
 
-/* --- GRÁFICOS (MANTENIENDO TU CUADRO BLANCO) --- */
+/* --- ESTILOS DE LOS GRÁFICOS (VISTA WEB) --- */
 .contenedor-graficos {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     margin-top: 20px;
     width: 100%;
-    box-sizing: border-box;
 }
 
 .tarjeta-grafico {
     flex: 1;
-    min-width: 300px;
+    min-width: 450px; /* Para que en PC se vean grandes */
     background: #ffffff;
-    padding: 15px;
+    padding: 25px; /* Más aire para que no se salga el gráfico */
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    box-sizing: border-box;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+}
+
+.titulo-seccion {
+    font-size: 1.25rem;
+    color: #555;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: left; /* Como estaba en tu captura original */
 }
 
 .canvas-container {
     position: relative;
-    height: 350px;
     width: 100%;
+    height: 350px; /* Altura controlada */
 }
 
-/* --- RESPONSIVE MÓVIL --- */
-@media (max-width: 768px) {
-    .dashboard-kpis { grid-template-columns: 1fr 1fr; }
-    .tarjeta-grafico { min-width: 100%; }
-    .canvas-container { height: 280px; }
-}
-
-/* --- EXPORTACIÓN (ARREGLO DE APILADO) --- */
+/* --- SOLUCIÓN PARA EL PDF (ARREGLA EL ENCIMADO) --- */
 @media print {
-    /* 1. Ocultamos lo innecesario */
-    .filtros-card, .btn-group, .seccion-analisis-inline, .btn-rango, #botones-rango-container {
+    .app-container { width: 100% !important; margin: 0 !important; padding: 0 !important; }
+    
+    /* Ocultar botones y filtros */
+    .filtros-card, .btn-group, .seccion-analisis-inline, #botones-rango-container {
         display: none !important;
     }
 
-    /* 2. Forzamos la tabla a lo ancho */
-    .table-scroll { overflow: visible !important; border: none !important; }
-    #tabla-tarifas { width: 100% !important; min-width: 100% !important; }
+    /* Forzar que cada gráfico sea una fila completa en el PDF */
+    .contenedor-graficos {
+        display: block !important;
+    }
 
-    /* 3. AQUÍ SE ARREGLA EL ENCIMADO: Uno arriba del otro */
-    .contenedor-graficos { 
-        display: block !important; /* Desactiva el lado a lado */
+    .tarjeta-grafico {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 40px !important; /* Espacio para que no se pisen */
+        page-break-inside: avoid; /* No corta el gráfico a la mitad */
+        border: 1px solid #eee !important;
+        box-shadow: none !important;
     }
     
-    .tarjeta-grafico { 
-        display: block !important;
-        width: 100% !important; 
-        margin-bottom: 50px !important; /* Separación real entre cuadros */
-        page-break-inside: avoid; /* No corta el cuadro a la mitad */
-        box-shadow: none !important;
-        border: 1px solid #eee !important;
-    }
-
-    /* Títulos dentro de la impresión */
-    .tarjeta-grafico h3 {
-        display: block !important;
-        text-align: center;
-        margin-top: 0;
+    /* Asegurar que el canvas no se achate en el PDF */
+    .canvas-container {
+        height: 450px !important; 
     }
 }
