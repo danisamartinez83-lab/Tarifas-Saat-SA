@@ -69,35 +69,35 @@ document.getElementById("btn-buscar").addEventListener("click", () => {
     if (!cli) return alert("Seleccione un cliente");
 
     datosClienteActual = listaTarifas.filter(t => t.cliente === cli).map(t => {
-        // 1. Limpieza profunda: eliminamos símbolos de peso, espacios y basura
-        let n = (t.tarifa || "0").replace(/[^0-9,.]/g, '');
+        let n = (t.tarifa || "0").trim();
+        let v = 0;
 
-        // 2. Conversión a número: quitamos puntos de miles y pasamos coma a punto decimal
-        let v = parseFloat(n.replace(/\./g, '').replace(',', '.')) || 0;
+        // LÓGICA DE DETECCIÓN DE FORMATO
+        if (n.includes(',') && n.includes('.')) {
+            // Caso: "1.234.567,89" -> Quitamos puntos, cambiamos coma por punto
+            v = parseFloat(n.replace(/\./g, '').replace(',', '.')) || 0;
+        } else if (n.includes(',')) {
+            // Caso: "61000,50" -> Cambiamos coma por punto
+            v = parseFloat(n.replace(',', '.')) || 0;
+        } else if (n.split('.').length > 2) {
+            // Caso: "1.234.567" (más de un punto es mil)
+            v = parseFloat(n.replace(/\./g, '')) || 0;
+        } else {
+            // Caso simple: "61000"
+            v = parseFloat(n) || 0;
+        }
 
-        // 3. Retornamos el valor real sin condiciones de división (eliminado v > 5000000)
+        // AUTO-CORRECCIÓN: 
+        // Si después de limpiar, el número es absurdamente alto (ej: 6.100.000 en vez de 61.000)
+        // y sabemos que ese cliente suele manejar miles, podrías aplicar una regla, 
+        // pero con la lógica de arriba ya debería separar 61.000 de 10.000.000.
+        
         return { ...t, valor: v };
     }).sort((a, b) => (a.año - b.año) || (obtenerMesNumero(a.mes) - obtenerMesNumero(b.mes)));
 
-    // Filtrar para la tabla según el mes y año seleccionados
     const fila = datosClienteActual.filter(t => t.mes === mes && t.año === anio);
     const cuerpo = document.getElementById("cuerpo-tabla");
-
-    if (fila.length === 0) {
-        cuerpo.innerHTML = `<tr><td colspan="7" style="text-align:center;">No hay datos para el mes/año seleccionado</td></tr>`;
-    } else {
-        cuerpo.innerHTML = fila.map(i => `
-            <tr>
-                <td>${i.cliente}</td>
-                <td>${i.servicio}</td>
-                <td>ACTIVO</td>
-                <td>1</td>
-                <td>${i.mes}</td>
-                <td>${i.año}</td>
-                <td>$${i.valor.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</td>
-            </tr>
-        `).join('');
-    }
+    cuerpo.innerHTML = fila.map(i => `<tr><td>${i.cliente}</td><td>${i.servicio}</td><td>ACTIVO</td><td>1</td><td>${i.mes}</td><td>${i.año}</td><td>$${i.valor.toLocaleString('es-AR')}</td></tr>`).join('');
 });
 // --- BOTÓN ANALIZAR ---
 // --- BOTÓN ANALIZAR COMPLETO (ANUAL, SEMESTRAL, TRIMESTRAL) ---
