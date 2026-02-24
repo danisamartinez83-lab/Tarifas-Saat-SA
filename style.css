@@ -184,19 +184,19 @@ select {
 /* --- SECCIÓN ANÁLISIS (MODIFICADA COMPLETA) --- */
 .seccion-analisis-inline {
     display: flex;
-    align-items: flex-end; /* Clave: todos los elementos se apoyan en la misma base */
+    align-items: flex-end; 
     gap: 12px;
     background: #f9f9f9;
     padding: 20px;
     border-radius: 8px;
     border: 1px solid #eee;
     margin: 20px 0;
-    flex-wrap: wrap; /* Para que en móviles se acomoden solos */
+    flex-wrap: wrap; 
 }
 
 .seccion-analisis-inline .control-grupo {
     margin-bottom: 0;
-    flex: 1; /* Permite que los selectores crezcan proporcionalmente */
+    flex: 1; 
     min-width: 140px;
 }
 
@@ -213,8 +213,9 @@ select {
     border: 1px solid #ccc;
     border-radius: 5px;
     background: white;
-    width: 100%; /* Ocupa el ancho de su control-grupo */
+    width: 100%; 
     height: 42px;
+    box-sizing: border-box; /* Asegura que el padding no rompa el ancho */
 }
 
 .btn-naranja-suave {
@@ -225,7 +226,7 @@ select {
     border-radius: 5px;
     font-weight: 600;
     cursor: pointer;
-    height: 42px; /* Misma altura que los select */
+    height: 42px; 
     transition: 0.3s;
     text-transform: uppercase;
     font-size: 0.8rem;
@@ -233,9 +234,8 @@ select {
     min-width: 160px;
 }
 
-/* Estilo diferente para el botón de Cargar para distinguirlo del de Analizar */
 #btn-cargar-servicios {
-    background-color: #666; /* Gris oscuro para diferenciar */
+    background-color: #666; 
 }
 
 #btn-cargar-servicios:hover {
@@ -246,7 +246,16 @@ select {
     background-color: #ffb167;
 }
 
-/* --- BOTONES DE RANGO --- */
+/* --- BOTONES DE RANGO (CORREGIDO PARA CENTRADO) --- */
+#botones-rango-container {
+    display: flex;
+    justify-content: center; /* Centra los botones */
+    gap: 10px;
+    margin: 15px 0 25px 0;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
 .btn-rango {
     background: white;
     border: 2px solid #ff6600;
@@ -257,7 +266,8 @@ select {
     font-size: 0.85rem;
     font-weight: bold;
     transition: 0.3s;
-    margin-right: 5px;
+    min-width: 100px;
+    text-align: center;
 }
 
 .btn-rango:hover {
@@ -270,21 +280,25 @@ select {
     box-shadow: 0 2px 5px rgba(255, 102, 0, 0.4);
 }
 
-/* --- GRÁFICOS --- */
+/* --- GRÁFICOS (CORREGIDO PARA ENCUADRE) --- */
 .contenedor-graficos {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     margin-top: 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .tarjeta-grafico {
     flex: 1;
-    min-width: 350px;
+    min-width: 300px; /* Reducido para mejor encuadre móvil */
+    max-width: 100%;
     background: #ffffff;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-sizing: border-box; /* Clave para no sobresalir a la derecha */
 }
 
 .canvas-container {
@@ -295,17 +309,38 @@ select {
 
 /* --- RESPONSIVE --- */
 @media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
     .seccion-analisis-inline {
         flex-direction: column;
         align-items: stretch;
+        padding: 15px;
     }
     
     .btn-naranja-suave {
         width: 100%;
+        min-width: 100%;
     }
 
     .dashboard-kpis {
         grid-template-columns: 1fr 1fr;
+    }
+
+    .tarjeta-grafico {
+        min-width: 100%;
+        margin: 0;
+    }
+
+    .canvas-container {
+        height: 280px; /* Altura un poco menor en móviles */
+    }
+
+    .btn-rango {
+        flex: 1; /* Los botones crecen igual en móvil */
+        font-size: 0.75rem;
+        padding: 8px 5px;
     }
 }
 
