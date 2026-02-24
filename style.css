@@ -299,21 +299,29 @@ select {
     }
 
     /* Forzar que cada gráfico sea una fila completa en el PDF */
-    .contenedor-graficos {
-        display: block !important;
-    }
+ /* Esto asegura que el cuadro blanco exista y tenga espacio */
+.contenedor-graficos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 20px 0;
+    width: 100%;
+    clear: both; /* Evita interferencias de elementos de arriba */
+}
 
-    .tarjeta-grafico {
-        display: block !important;
-        width: 100% !important;
-        margin-bottom: 40px !important; /* Espacio para que no se pisen */
-        page-break-inside: avoid; /* No corta el gráfico a la mitad */
-        border: 1px solid #eee !important;
-        box-shadow: none !important;
-    }
-    
-    /* Asegurar que el canvas no se achate en el PDF */
-    .canvas-container {
-        height: 450px !important; 
-    }
+.tarjeta-grafico {
+    flex: 1;
+    min-width: 450px;
+    background: white !important;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: block !important; /* Para que no se oculte */
+}
+
+/* Si esto no tiene altura, el gráfico mide 0 píxeles y no se ve */
+.canvas-container {
+    position: relative;
+    height: 350px !important; 
+    width: 100% !important;
 }
