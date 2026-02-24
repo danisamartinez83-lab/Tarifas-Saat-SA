@@ -177,7 +177,9 @@ document.getElementById("btn-analizar").addEventListener("click", () => {
     document.getElementById("var-12meses").innerText = varAnual.toFixed(1) + "%";
     document.getElementById("var-6meses").innerText = varSemestre.toFixed(1) + "%";
     document.getElementById("var-3meses").innerText = varTrimestre.toFixed(1) + "%";
-
+// Dentro del click de btn-analizar, al final:
+document.querySelectorAll('.btn-rango').forEach(btn => btn.classList.remove('activo'));
+document.querySelector('[onclick="filtrarPorRango(12)"]').classList.add('activo');
     // --- CÁLCULO DE BRECHAS MERCADO ---
     const infMkt = calcularAcumuladoMercado(anioSel, 'ipc', mesesTranscurridos) * 100;
     const salMkt = calcularAcumuladoMercado(anioSel, 'salarios', mesesTranscurridos) * 100;
@@ -198,34 +200,59 @@ document.getElementById("btn-analizar").addEventListener("click", () => {
     actualizarGraficos(datosParaGraficar, anioSel, vBaseReal, anioAnt);
 });
 function filtrarPorRango(meses) {
-    if (datosClienteActual.length === 0) return;
+    const servicioSel = document.getElementById("filtro-servicio").value;
     const anioSel = document.getElementById("filtro-anio-kpi").value;
+    const anioAnt = (parseInt(anioSel) - 1).toString();
+
+    // 1. Verificamos que haya un servicio seleccionado
+    if (!servicioSel) {
+        return alert("Primero seleccione un servicio y pulse 'Analizar Historial'");
+    }
+
+    // 2. Filtramos datos específicos de ese servicio
+    const datosFiltradosParaAnalisis = datosClienteActual.filter(d => d.servicio === servicioSel);
     
-    // 1. Obtenemos los datos del año seleccionado
-    const datosAnio = datosClienteActual.filter(d => d.año === anioSel)
+    // 3. Obtenemos los datos del año actual ordenados
+    const datosAnio = datosFiltradosParaAnalisis.filter(d => d.año === anioSel)
         .sort((a, b) => obtenerMesNumero(a.mes) - obtenerMesNumero(b.mes));
 
-    if (datosAnio.length < 2) return;
+    if (datosAnio.length === 0) return alert("No hay datos para este periodo.");
 
-    // 2. Definimos el recorte para el gráfico
+    // 4. Marcamos el botón activo visualmente
+    document.querySelectorAll('.btn-rango').forEach(btn => btn.classList.remove('activo'));
+    if (event) event.target.classList.add('activo');
+
+    // 5. Definimos el recorte (Últimos X meses)
     const recorte = datosAnio.slice(-meses); 
     
-    // 3. Cálculo de Variación Propia del periodo
-    const vF = datosAnio[datosAnio.length - 1].valor; // Diciembre (o último mes)
-    const indiceBase = datosAnio.length - 1 - meses; 
-    const vI = indiceBase >= 0 ? datosAnio[indiceBase].valor : datosAnio[0].valor;
-    const varPropia = ((vF - vI) / vI) * 100;
-    
-    // 4. Cálculo de Inflación y Salarios del periodo (Dinámico: 3, 6 o 12)
-    const infRecorte = calcularAcumuladoMercado(anioSel, 'ipc', meses) * 100;
-    const salRecorte = calcularAcumuladoMercado(anioSel, 'salarios', meses) * 100;
+    // 6. Determinamos la BASE para el cálculo de este periodo
+    // Para que los KPIs sean exactos, la base es el valor justo antes del recorte
+    const indiceBase = datosAnio.length - meses - 1;
+    let vI;
+    if (indiceBase >= 0) {
+        vI = datosAnio[indiceBase].valor; // El mes anterior al recorte
+    } else {
+        // Si no hay mes anterior (ej. pides 12 meses), buscamos Dic del año pasado
+        const dicAnt = datosFiltradosParaAnalisis.find(d => d.año === anioAnt && d.mes === "diciembre");
+        vI = dicAnt ? dicAnt.valor : datosAnio[0].valor;
+    }
 
-    // 5. Actualizamos las tarjetas con el valor del periodo y su referencia
+    // 7. Cálculo de Variación Propia del periodo seleccionado
+    const vF = recorte[recorte.length - 1].valor;
+    const varPropia = (vI > 0) ? ((vF - vI) / vI) * 100 : 0;
+    
+    // 8. Cálculo de Inflación y Salarios acumulados del periodo
+    // Usamos el tamaño del recorte por si hay menos meses disponibles de los pedidos
+    const mesesARecortar = recorte.length;
+    const infRecorte = calcularAcumuladoMercado(anioSel, 'ipc', mesesARecortar) * 100;
+    const salRecorte = calcularAcumuladoMercado(anioSel, 'salarios', mesesARecortar) * 100;
+
+    // 9. Actualizamos las tarjetas KPI
     actualizarKPI("kpi-brecha-ipc", "card-brecha-ipc", varPropia - infRecorte, infRecorte);
     actualizarKPI("kpi-brecha-salarios", "card-brecha-salarios", varPropia - salRecorte, salRecorte);
     
-    // 6. Refrescamos el gráfico
-    actualizarGraficos(recorte, anioSel);
+    // 10. Refrescamos el gráfico pasando la base calculada
+    actualizarGraficos(recorte, anioSel, vI);
 }
 
 function actualizarKPI(idTxt, idCard, valorBrecha, valorMercado) {
