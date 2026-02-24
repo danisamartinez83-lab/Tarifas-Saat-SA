@@ -87,11 +87,24 @@ select {
     border: none;
 }
 
-#btn-buscar { background-color: #444; color: white; }
-#btn-buscar:hover { background-color: #ff6600; }
+#btn-buscar {
+    background-color: #444;
+    color: white;
+}
 
-#btn-exportar { background-color: #add8e6; color: #333; white-space: nowrap; }
-#btn-exportar:hover { background-color: #87ceeb; }
+#btn-buscar:hover {
+    background-color: #ff6600;
+}
+
+#btn-exportar {
+    background-color: #add8e6;
+    color: #333;
+    white-space: nowrap;
+}
+
+#btn-exportar:hover {
+    background-color: #87ceeb;
+}
 
 /* --- TABLA Y SCROLL --- */
 .tabla-container {
@@ -115,7 +128,11 @@ select {
     min-width: 800px;
 }
 
-#tabla-tarifas thead { background-color: #666; color: white; }
+#tabla-tarifas thead {
+    background-color: #666;
+    color: white;
+}
+
 #tabla-tarifas th, #tabla-tarifas td {
     padding: 15px;
     text-align: left;
@@ -123,7 +140,14 @@ select {
     white-space: nowrap;
 }
 
-#tabla-tarifas td:last-child { color: #ff6600; font-weight: bold; }
+#tabla-tarifas tr:hover {
+    background-color: #fff5ee;
+}
+
+#tabla-tarifas td:last-child {
+    color: #ff6600;
+    font-weight: bold;
+}
 
 /* --- DASHBOARD KPIS --- */
 .dashboard-kpis {
@@ -142,6 +166,21 @@ select {
     text-align: center;
 }
 
+.kpi-label {
+    display: block;
+    color: #666;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.kpi-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
 /* --- SECCIÓN ANÁLISIS --- */
 .seccion-analisis-inline {
     display: flex;
@@ -153,6 +192,38 @@ select {
     border: 1px solid #eee;
     margin: 20px 0;
     flex-wrap: wrap; 
+}
+
+.seccion-analisis-inline .control-grupo {
+    margin-bottom: 0;
+    flex: 1; 
+    min-width: 140px;
+}
+
+#filtro-anio-kpi, #filtro-servicio {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: white;
+    width: 100%; 
+    height: 42px;
+    box-sizing: border-box;
+}
+
+.btn-naranja-suave {
+    flex: 1;
+    background-color: #ff9f43;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    height: 42px; 
+    transition: 0.3s;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    padding: 0 15px;
+    min-width: 160px;
 }
 
 /* --- BOTONES DE RANGO --- */
@@ -176,6 +247,7 @@ select {
     font-weight: bold;
     transition: 0.3s;
     min-width: 100px;
+    text-align: center;
 }
 
 .btn-rango.activo {
@@ -183,7 +255,7 @@ select {
     color: white !important;
 }
 
-/* --- GRÁFICOS (VISTA WEB) --- */
+/* --- GRÁFICOS (MANTENIENDO TU CUADRO BLANCO) --- */
 .contenedor-graficos {
     display: flex;
     flex-wrap: wrap;
@@ -197,18 +269,10 @@ select {
     flex: 1;
     min-width: 300px;
     background: #ffffff;
-    padding: 20px;
+    padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     box-sizing: border-box;
-}
-
-/* Estilo para los títulos de los gráficos */
-.tarjeta-grafico h3 {
-    text-align: center;
-    color: #444;
-    margin-bottom: 15px;
-    font-size: 1.1rem;
 }
 
 .canvas-container {
@@ -219,35 +283,40 @@ select {
 
 /* --- RESPONSIVE MÓVIL --- */
 @media (max-width: 768px) {
-    .seccion-analisis-inline { flex-direction: column; align-items: stretch; }
     .dashboard-kpis { grid-template-columns: 1fr 1fr; }
     .tarjeta-grafico { min-width: 100%; }
+    .canvas-container { height: 280px; }
 }
 
-/* --- EXPORTACIÓN (CORRECCIÓN GRÁFICOS ENCIMADOS) --- */
+/* --- EXPORTACIÓN (ARREGLO DE APILADO) --- */
 @media print {
-    /* 1. Ocultar filtros y botones */
+    /* 1. Ocultamos lo innecesario */
     .filtros-card, .btn-group, .seccion-analisis-inline, .btn-rango, #botones-rango-container {
         display: none !important;
     }
 
-    /* 2. Mostrar toda la tabla (sin scroll) */
+    /* 2. Forzamos la tabla a lo ancho */
     .table-scroll { overflow: visible !important; border: none !important; }
-    #tabla-tarifas { min-width: 100% !important; width: 100% !important; }
+    #tabla-tarifas { width: 100% !important; min-width: 100% !important; }
 
-    /* 3. Forzar gráficos uno debajo del otro */
+    /* 3. AQUÍ SE ARREGLA EL ENCIMADO: Uno arriba del otro */
     .contenedor-graficos { 
-        display: block !important; /* Desactivamos el flex para que se apilen */
+        display: block !important; /* Desactiva el lado a lado */
     }
     
     .tarjeta-grafico { 
         display: block !important;
         width: 100% !important; 
-        margin-bottom: 50px !important; /* Espacio para que no se encimen */
-        page-break-inside: avoid; /* Evita que se corten entre páginas */
+        margin-bottom: 50px !important; /* Separación real entre cuadros */
+        page-break-inside: avoid; /* No corta el cuadro a la mitad */
         box-shadow: none !important;
-        border: 1px solid #ddd !important;
+        border: 1px solid #eee !important;
     }
 
-    .canvas-container { height: 400px !important; }
+    /* Títulos dentro de la impresión */
+    .tarjeta-grafico h3 {
+        display: block !important;
+        text-align: center;
+        margin-top: 0;
+    }
 }
