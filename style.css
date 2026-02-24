@@ -267,38 +267,50 @@ select {
     .canvas-container { height: 280px; }
     .btn-rango { flex: 1; font-size: 0.75rem; padding: 8px 5px; }
 }
-
-/* --- CONFIGURACIÓN DE IMPRESIÓN (ARRIBA Y ABAJO) --- */
+/* --- CONFIGURACIÓN DE IMPRESIÓN REFORZADA --- */
 @media print {
-    body { background-color: white !important; padding: 0 !important; }
-    .app-container { max-width: 100% !important; margin: 0 !important; }
+    /* 1. Reset de página */
+    @page { size: portrait; margin: 1cm; }
+    body { background-color: white !important; }
     
-    .filtros-card, .btn-group, .seccion-analisis-inline, .btn-rango, #botones-rango-container {
+    /* 2. Ocultar lo que no va */
+    .filtros-card, .btn-group, .seccion-analisis-inline, 
+    .btn-rango, #botones-rango-container, header {
         display: none !important;
     }
 
-    /* Tabla expandida */
-    .table-scroll { overflow: visible !important; border: none !important; display: block !important; }
-    #tabla-tarifas { width: 100% !important; min-width: 100% !important; }
-
-    /* FORZAR GRÁFICOS UNO ABAJO DEL OTRO */
-    .contenedor-graficos { 
-        display: block !important; /* Desactiva el Flexbox */
+    /* 3. Tabla: Ocupa todo el ancho */
+    .tabla-container, .table-scroll {
+        overflow: visible !important;
+        display: block !important;
         width: 100% !important;
     }
-    
-    .tarjeta-grafico { 
-        display: block !important; 
+    #tabla-tarifas { 
+        min-width: 100% !important; 
         width: 100% !important; 
-        margin-bottom: 50px !important; /* Espacio extra entre ellos */
-        page-break-inside: avoid !important;
-        box-shadow: none !important;
-        border: 1px solid #eee !important;
-        clear: both !important; /* Asegura que no haya nada al lado */
     }
 
-    .canvas-container { 
-        height: 400px !important; /* Altura fija para impresión */
-        width: 100% !important; 
+    /* 4. GRÁFICOS: APILADO VERTICAL OBLIGATORIO */
+    .contenedor-graficos {
+        display: block !important; /* Rompe el Flexbox */
+        width: 100% !important;
+    }
+
+    .tarjeta-grafico {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        margin-bottom: 50px !important; /* Espacio para que no se peguen */
+        page-break-inside: avoid !important;
+        border: none !important;
+        box-shadow: none !important;
+        position: relative !important;
+        float: none !important; /* Evita cualquier alineación lateral remanente */
+    }
+
+    .canvas-container {
+        width: 100% !important;
+        height: 350px !important; /* Altura fija para que el PDF no lo achate */
     }
 }
