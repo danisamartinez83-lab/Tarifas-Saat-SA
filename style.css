@@ -431,3 +431,32 @@ td:last-child {
         display: none !important;
     }
 }
+/* Esto permite que la tabla se deslice de lado en el celular */
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Evita que los textos se amontonen o se corten */
+#tabla-tarifas {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px; /* Obliga a la tabla a mantener un ancho mínimo para que sea legible */
+}
+
+#tabla-tarifas th, #tabla-tarifas td {
+    white-space: nowrap; /* Evita que el texto salte de línea */
+    padding: 12px 8px;
+    text-align: left;
+}
+
+/* Ajuste para que los gráficos no se vean gigantes en celular */
+.canvas-container {
+    position: relative;
+    height: 300px; 
+    width: 100%;
+}
