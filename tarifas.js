@@ -470,9 +470,7 @@ function cargarSelectClientes() {
 document.getElementById("btn-limpiar").addEventListener("click", () => location.reload());
 
 
-// =========================================================================
-// --- NUEVO EVENTO: EXPORTAR REPORTE MENSUAL GLOBAL (TODOS LOS CLIENTES) ---
-// =========================================================================
+// --- BOTÓN: EXPORTAR REPORTE MENSUAL GLOBAL (TODOS LOS CLIENTES - ULTRA SEGURO) ---
 document.getElementById("btn-reporte-global").addEventListener("click", () => {
     const mesSel = document.getElementById("filtro-mes").value.toLowerCase();
     const anioSel = document.getElementById("filtro-año").value;
@@ -481,7 +479,18 @@ document.getElementById("btn-reporte-global").addEventListener("click", () => {
         return alert("Por favor, seleccione un Mes y Año en los filtros superiores para generar el reporte global.");
     }
 
-    // 1. Filtrar todas las tarifas que coincidan con el mes y año seleccionado para TODOS los clientes
+    // Listado de conceptos adicionales normalizados (en minúsculas y sin espacios extras)
+    const itemsAdicionales = [
+        "adicional sobre 12 horas", 
+        "desintalaciones equipos avl", 
+        "hasta 12 horas", 
+        "instalaciones equipos avl", 
+        "instalaciones ficha trille", 
+        "instalaciones traba robusta c y s", 
+        "instalaciones traba robusta chapelco"
+    ].map(item => item.trim());
+
+    // 1. Filtrar todas las tarifas del período
     const datosMes = listaTarifas.filter(t => t.mes === mesSel && t.año === anioSel.toString())
         .map(t => {
             let n = (t.tarifa || "0").trim();
@@ -490,7 +499,12 @@ document.getElementById("btn-reporte-global").addEventListener("click", () => {
             else if (n.includes(',')) { v = parseFloat(n.replace(',', '.')) || 0; } 
             else if (n.split('.').length > 2) { v = parseFloat(n.replace(/\./g, '')) || 0; } 
             else { v = parseFloat(n) || 0; }
-            return { ...t, valor: v };
+            
+            // NORMALIZACIÓN DEL ESTADO: Quitamos espacios y lo pasamos todo a MAYÚSCULAS 
+            // Así "Inactivo", "inactivo" o "INACTIVO" se transforman en lo mismo.
+            let estadoReal = (t.estado || "ACTIVO").trim().toUpperCase();
+
+            return { ...t, valor: v, estadoReal: estadoReal };
         })
         .sort((a, b) => a.cliente.localeCompare(b.cliente));
 
@@ -498,11 +512,19 @@ document.getElementById("btn-reporte-global").addEventListener("click", () => {
         return alert(`No se encontraron datos cargados para el período: ${mesSel.toUpperCase()} ${anioSel}`);
     }
 
-    // 2. Calcular Métricas Globales del Mes
+    // 2. Calcular Métricas Globales de forma inteligente
     const totalFacturacion = datosMes.reduce((acc, item) => acc + item.valor, 0);
-    const totalClientesActivos = [...new Set(datosMes.map(d => d.cliente))].length;
+    
+    // Contar clientes únicos EXCLUYENDO los conceptos adicionales de forma segura
+    const clientesFiltrados = datosMes.filter(item => {
+        const nombreClienteClean = item.cliente.trim().toLowerCase();
+        // Si el nombre de la columna cliente coincide con nuestra lista de adicionales, lo sacamos
+        return !itemsAdicionales.includes(nombreClienteClean);
+    });
+    
+    const totalClientesActivos = [...new Set(clientesFiltrados.map(d => d.cliente))].length;
 
-    // 3. Crear una estructura HTML temporal optimizada para el PDF impreso
+    // 3. Crear estructura HTML temporal para el PDF
     const contenedorTemporal = document.createElement("div");
     contenedorTemporal.style.padding = "20px";
     contenedorTemporal.style.fontFamily = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -519,12 +541,12 @@ document.getElementById("btn-reporte-global").addEventListener("click", () => {
 
         <div style="display: flex; gap: 20px; margin-bottom: 30px;">
             <div style="flex: 1; border: 1px solid #e0e0e0; border-top: 4px solid #ff6600; padding: 15px; border-radius: 4px; background: #fafafa;">
-                <span style="font-size: 11px; color: #666; font-weight: bold; text-transform: uppercase;">Total Clientes con Servicio</span>
+                <span style="font-size: 11px; color: #666; font-weight: bold; text-transform: uppercase;">Total Clientes Reales</span>
                 <div style="font-size: 22px; font-weight: bold; margin-top: 5px; color: #111;">${totalClientesActivos}</div>
             </div>
-            <div style="flex: 1; border: 1px solid #e0e0e0; border-top: 4px solid #27ae60; padding: 15px; border-radius: 4px; background: #fafafa;">
+            <div style="flex: 1; border: 1px solid #e0e0e0; border-top: 4px solid #444; padding: 15px; border-radius: 4px; background: #fafafa;">
                 <span style="font-size: 11px; color: #666; font-weight: bold; text-transform: uppercase;">Facturación Total Estimada</span>
-                <div style="font-size: 22px; font-weight: bold; margin-top: 5px; color: #27ae60;">
+                <div style="font-size: 22px; font-weight: bold; margin-top: 5px; color: #444;">
                     $${totalFacturacion.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
             </div>
@@ -540,16 +562,28 @@ document.getElementById("btn-reporte-global").addEventListener("click", () => {
                 </tr>
             </thead>
             <tbody>
-                ${datosMes.map((item, index) => `
-                    <tr style="border-bottom: 1px solid #eee; background-color: ${index % 2 === 0 ? '#fff' : '#fcfcfc'};">
-                        <td style="padding: 10px; font-weight: bold; color: #111;">${item.cliente}</td>
-                        <td style="padding: 10px; color: #555;">${item.servicio}</td>
-                        <td style="padding: 10px; text-align: center;"><span style="background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold;">ACTIVO</span></td>
-                        <td style="padding: 10px; text-align: right; font-weight: bold; color: #333;">
-                            $${item.valor.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </td>
-                    </tr>
-                `).join('')}
+                ${datosMes.map((item, index) => {
+                    // Configuración dinámica visual del badge de estado según el Sheets
+                    let badgeStyle = "background: #e8f5e9; color: #2e7d32;"; // Verde para ACTIVO
+                    if (item.estadoReal === "INACTIVO") {
+                        badgeStyle = "background: #ffebee; color: #c62828;"; // Rojo para INACTIVO
+                    }
+
+                    return `
+                        <tr style="border-bottom: 1px solid #eee; background-color: ${index % 2 === 0 ? '#fff' : '#fcfcfc'};">
+                            <td style="padding: 10px; font-weight: bold; color: #111;">${item.cliente}</td>
+                            <td style="padding: 10px; color: #555;">${item.servicio}</td>
+                            <td style="padding: 10px; text-align: center;">
+                                <span style="${badgeStyle} padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold;">
+                                    ${item.estadoReal}
+                                </span>
+                            </td>
+                            <td style="padding: 10px; text-align: right; font-weight: bold; color: #333;">
+                                $${item.valor.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </td>
+                        </tr>
+                    `;
+                }).join('')}
             </tbody>
         </table>
         
