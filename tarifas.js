@@ -547,12 +547,15 @@ document.getElementById("btn-reporte-global").addEventListener("click", () => {
     
     const totalClientesActivos = [...new Set(clientesFiltrados.map(d => d.cliente))].length;
 
-    // 3. Crear estructura HTML temporal para el PDF
-    const contenedorTemporal = document.createElement("div");
-    contenedorTemporal.style.padding = "20px";
-    contenedorTemporal.style.fontFamily = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-    contenedorTemporal.style.color = "#333";
-    contenedorTemporal.style.backgroundColor = "#fff";
+    // --- MODIFICADO: Estructura HTML temporal optimizada para el inicio de hoja ---
+const contenedorTemporal = document.createElement("div");
+contenedorTemporal.style.fontFamily = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+contenedorTemporal.style.color = "#333";
+contenedorTemporal.style.backgroundColor = "#fff";
+
+// 🛠️ AJUSTES CLAVE PARA SUBIR EL REPORTE:
+contenedorTemporal.style.padding = "0px 20px 20px 20px"; // 0 arriba, 20 a los costados y abajo
+contenedorTemporal.style.marginTop = "-15px";            // Empuja todo el contenido hacia arriba de la hoja
 
     contenedorTemporal.innerHTML = `
         <div style="border-bottom: 2px solid #ff6600; padding-bottom: 10px; margin-bottom: 20px;">
