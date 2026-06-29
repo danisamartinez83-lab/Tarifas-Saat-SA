@@ -164,33 +164,34 @@ document.getElementById("btn-analizar").addEventListener("click", () => {
     const mesFinalIdx = obtenerMesNumero(ultimoDato.mes);
     const mesesTranscurridos = mesFinalIdx + 1;
 
-    // ==========================================
-    // --- NUEVO CÁLCULO DE VARIACIONES DINÁMICAS (CORREGIDO) ---
+   // ==========================================
+    // --- NUEVO CÁLCULO DE VARIACIONES DINÁMICAS (CORREGIDO DEFENITIVO) ---
     // ==========================================
     
-    // 1. Anual (Se mantiene igual, punta contra base inicial)
+    // 1. Anual: Punta (Junio) contra la base inicial del año
     const varAnual = (vBaseReal > 0) ? ((vFinal - vBaseReal) / vBaseReal) * 100 : 0;
     
-    // 2. Semestral Móvil (Busca 6 meses hacia atrás desde el mes actual en pantalla)
+    // 2. Semestral Móvil: Si el índice final es menor a 6 (como Junio, que es idx 5), 
+    // significa que el "semestre" es todo lo que va del año. Usamos vBaseReal.
     const idxSemestreAtras = mesFinalIdx - 6;
     let vSemestreBase = 0;
     if (idxSemestreAtras >= 0) {
         const mesSemestreBase = datosRealesAnio.find(d => obtenerMesNumero(d.mes) === idxSemestreAtras);
         vSemestreBase = mesSemestreBase ? mesSemestreBase.valor : 0;
     } else {
-        // Si el salto hacia atrás cae en el año anterior (ej. en Junio), usa la base inicial
+        // Corrección: Forzamos a usar la base real de principio de año / cierre anterior
         vSemestreBase = vBaseReal;
     }
     const varSemestre = (vSemestreBase > 0) ? ((vFinal - vSemestreBase) / vSemestreBase) * 100 : 0;
     
-    // 3. Trimestral Móvil (Busca 3 meses hacia atrás desde el mes actual en pantalla)
+    // 3. Trimestral Móvil: Busca 3 meses hacia atrás. 
+    // Para Junio (idx 5), 5 - 3 = 2 (Marzo). Buscará el valor de Marzo.
     const idxTrimestreAtras = mesFinalIdx - 3;
     let vTrimestreBase = 0;
     if (idxTrimestreAtras >= 0) {
         const mesTrimestreBase = datosRealesAnio.find(d => obtenerMesNumero(d.mes) === idxTrimestreAtras);
         vTrimestreBase = mesTrimestreBase ? mesTrimestreBase.valor : 0;
     } else {
-        // Si cae en el año anterior, toma la base del cierre
         vTrimestreBase = vBaseReal;
     }
     const varTrimestre = (vTrimestreBase > 0) ? ((vFinal - vTrimestreBase) / vTrimestreBase) * 100 : 0;
