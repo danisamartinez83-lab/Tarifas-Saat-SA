@@ -71,18 +71,19 @@ select {
     height: 42px;
 }
 
-/* --- GRUPO DE BOTONES --- */
+/* --- GRUPO DE BOTONES (OPCIÓN FLEXIBLE DE DOS LÍNEAS) --- */
 .btn-group {
     display: flex;
     gap: 10px;
-    align-items: flex-end; /* Alinea los botones perfectamente abajo con los selectores */
+    align-items: flex-end;
+    flex-wrap: wrap; /* Esta propiedad mágica hace que bajen si no entran */
     width: 100%;
 }
 
-/* Base común para TODOS los botones del grupo superior */
 #btn-buscar, #btn-limpiar, #btn-exportar, #btn-reporte-global {
     flex: 1;
-    padding: 12px 15px;
+    min-width: 100px; /* Evita que los botones colapsen y se hagan diminutos */
+    padding: 12px 12px;
     border-radius: 4px;
     font-weight: bold;
     font-size: 13px;
@@ -94,10 +95,9 @@ select {
     align-items: center;
     justify-content: center;
     gap: 6px;
-    height: 45px; /* Forzamos a que todos tengan exactamente la misma altura */
+    height: 45px; 
 }
 
-/* Botones Principales (Buscar, PDFs) -> Base Gris Oscuro, Cambian a Naranja */
 #btn-buscar, #btn-exportar, #btn-reporte-global {
     background-color: #444;
     color: white;
@@ -108,7 +108,6 @@ select {
     box-shadow: 0 2px 5px rgba(255, 102, 0, 0.3);
 }
 
-/* Botón Secundario (Limpiar) -> Fondo Blanco con borde Gris */
 #btn-limpiar {
     background-color: white;
     color: #555;
