@@ -470,7 +470,7 @@ function cargarSelectClientes() {
 document.getElementById("btn-limpiar").addEventListener("click", () => location.reload());
 
 
-// --- BOTÓN: EXPORTAR REPORTE MENSUAL GLOBAL (TODOS LOS CLIENTES - ULTRA SEGURO) ---
+// --- BOTÓN: EXPORTAR REPORTE MENSUAL GLOBAL (CORRECCIÓN DE ESTADOS HISTÓRICOS Y BAJAS) ---
 document.getElementById("btn-reporte-global").addEventListener("click", () => {
     const mesSel = document.getElementById("filtro-mes").value.toLowerCase();
     const anioSel = document.getElementById("filtro-año").value;
@@ -479,7 +479,7 @@ document.getElementById("btn-reporte-global").addEventListener("click", () => {
         return alert("Por favor, seleccione un Mes y Año en los filtros superiores para generar el reporte global.");
     }
 
-    // Listado de conceptos adicionales normalizados (en minúsculas y sin espacios extras)
+    // Listado de conceptos adicionales normalizados
     const itemsAdicionales = [
         "adicional sobre 12 horas", 
         "desintalaciones equipos avl", 
@@ -490,35 +490,36 @@ document.getElementById("btn-reporte-global").addEventListener("click", () => {
         "instalaciones traba robusta chapelco"
     ].map(item => item.trim());
 
-    // 1. Filtrar todas las tarifas del período
-    const datosMes = listaTarifas.filter(t => t.mes === mesSel && t.año === anioSel.toString())
-        .map(t => {
-            let n = (t.tarifa || "0").trim();
-            let v = 0;
-            if (n.includes(',') && n.includes('.')) { v = parseFloat(n.replace(/\./g, '').replace(',', '.')) || 0; } 
-            else if (n.includes(',')) { v = parseFloat(n.replace(',', '.')) || 0; } 
-            else if (n.split('.').length > 2) { v = parseFloat(n.replace(/\./g, '')) || 0; } 
-            else { v = parseFloat(n) || 0; }
-            
-            // NORMALIZACIÓN DEL ESTADO: Quitamos espacios y lo pasamos todo a MAYÚSCULAS 
-            // Así "Inactivo", "inactivo" o "INACTIVO" se transforman en lo mismo.
-            let estadoReal = (t.estado || "ACTIVO").trim().toUpperCase();
+    // 1. Filtrar estrictamente las tarifas que correspondan al MES y AÑO seleccionado
+    const datosMes = listaTarifas.filter(t => {
+        // Aseguramos que coincida tanto el mes como el año de la fila en la planilla
+        return t.mes.toLowerCase().trim() === mesSel && t.año.toString().trim() === anioSel.toString().trim();
+    })
+    .map(t => {
+        let n = (t.tarifa || "0").trim();
+        let v = 0;
+        if (n.includes(',') && n.includes('.')) { v = parseFloat(n.replace(/\./g, '').replace(',', '.')) || 0; } 
+        else if (n.includes(',')) { v = parseFloat(n.replace(',', '.')) || 0; } 
+        else if (n.split('.').length > 2) { v = parseFloat(n.replace(/\./g, '')) || 0; } 
+        else { v = parseFloat(n) || 0; }
+        
+        // NORMALIZACIÓN ABSOLUTA DEL ESTADO DEL MES SELECCIONADO
+        let estadoReal = (t.estado || "ACTIVO").trim().toUpperCase();
 
-            return { ...t, valor: v, estadoReal: estadoReal };
-        })
-        .sort((a, b) => a.cliente.localeCompare(b.cliente));
+        return { ...t, valor: v, estadoReal: estadoReal };
+    })
+    .sort((a, b) => a.cliente.localeCompare(b.cliente));
 
     if (datosMes.length === 0) {
         return alert(`No se encontraron datos cargados para el período: ${mesSel.toUpperCase()} ${anioSel}`);
     }
 
-    // 2. Calcular Métricas Globales de forma inteligente
+    // 2. Calcular Métricas Globales
     const totalFacturacion = datosMes.reduce((acc, item) => acc + item.valor, 0);
     
-    // Contar clientes únicos EXCLUYENDO los conceptos adicionales de forma segura
+    // Contar clientes únicos excluyendo adicionales
     const clientesFiltrados = datosMes.filter(item => {
         const nombreClienteClean = item.cliente.trim().toLowerCase();
-        // Si el nombre de la columna cliente coincide con nuestra lista de adicionales, lo sacamos
         return !itemsAdicionales.includes(nombreClienteClean);
     });
     
@@ -541,7 +542,7 @@ document.getElementById("btn-reporte-global").addEventListener("click", () => {
 
         <div style="display: flex; gap: 20px; margin-bottom: 30px;">
             <div style="flex: 1; border: 1px solid #e0e0e0; border-top: 4px solid #ff6600; padding: 15px; border-radius: 4px; background: #fafafa;">
-                <span style="font-size: 11px; color: #666; font-weight: bold; text-transform: uppercase;">Total Clientes Reales</span>
+                <span style="font-size: 11px; color: #666; font-weight: bold; text-transform: uppercase;">Total Clientes Reales en Período</span>
                 <div style="font-size: 22px; font-weight: bold; margin-top: 5px; color: #111;">${totalClientesActivos}</div>
             </div>
             <div style="flex: 1; border: 1px solid #e0e0e0; border-top: 4px solid #444; padding: 15px; border-radius: 4px; background: #fafafa;">
@@ -563,10 +564,11 @@ document.getElementById("btn-reporte-global").addEventListener("click", () => {
             </thead>
             <tbody>
                 ${datosMes.map((item, index) => {
-                    // Configuración dinámica visual del badge de estado según el Sheets
+                    // Configuración dinámica visual del badge de estado incluyendo BAJA e INACTIVO
                     let badgeStyle = "background: #e8f5e9; color: #2e7d32;"; // Verde para ACTIVO
-                    if (item.estadoReal === "INACTIVO") {
-                        badgeStyle = "background: #ffebee; color: #c62828;"; // Rojo para INACTIVO
+                    
+                    if (item.estadoReal === "INACTIVO" || item.estadoReal === "BAJA") {
+                        badgeStyle = "background: #ffebee; color: #c62828;"; // Rojo para Inactivos o Bajas
                     }
 
                     return `
