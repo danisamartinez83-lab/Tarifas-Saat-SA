@@ -24,16 +24,18 @@ function procesarCSV(texto, tipo) {
         const col = fila.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/"/g, '').trim());
         
         // CORREGIDO: Mapeo exacto según el orden de tu planilla
-        if (tipo === 'tarifas') {
-            return { 
-                cliente: col[0], 
-                servicio: col[1], 
-                estado: col[2], // Índice 2 para Estado
-                mes: col[4]?.toLowerCase(), // Índice 4 para Mes
-                año: col[5], // Índice 5 para Año
-                tarifa: col[6] // Índice 6 para Importe (Tarifa)
-            };
-        }
+       if (tipo === 'tarifas') {
+    if (!col[0] || col.length < 7) return null;
+    return { 
+        cliente: col[0], 
+        servicio: col[1], 
+        estado: col[2],
+        unidades: col[3], // <-- AGREGÁ ESTA LÍNEA AQUÍ
+        mes: col[4]?.toLowerCase(), 
+        año: col[5],               
+        tarifa: col[6]             
+    };
+}
         
         if (tipo === 'ipc') return { mes: col[0]?.toLowerCase(), año: col[1], variacion: parseFloat(col[3]?.replace(',', '.') || 0) };
         if (tipo === 'salarios') {
@@ -72,7 +74,7 @@ function calcularAcumuladoMercado(anio, tipo, mesesAtras) {
 }
 
 // --- BOTONES ---
-// --- BOTÓN BUSCAR: MUESTRA TODOS LOS CONCEPTOS EN LA TABLA ---
+// --- BOTÓN BUSCAR CORRECTO (CON ESTADO Y UNIDADES DINÁMICOS) ---
 document.getElementById("btn-buscar").addEventListener("click", () => {
     const cli = document.getElementById("filtro-cliente").value;
     const mes = document.getElementById("filtro-mes").value.toLowerCase();
@@ -80,12 +82,10 @@ document.getElementById("btn-buscar").addEventListener("click", () => {
 
     if (!cli) return alert("Seleccione un cliente");
 
-    // Cargamos TODOS los datos del cliente para la tabla
     datosClienteActual = listaTarifas.filter(t => t.cliente === cli).map(t => {
         let n = (t.tarifa || "0").trim();
         let v = 0;
 
-        // Lógica de detección de formato (Millones y Miles)
         if (n.includes(',') && n.includes('.')) {
             v = parseFloat(n.replace(/\./g, '').replace(',', '.')) || 0;
         } else if (n.includes(',')) {
@@ -99,23 +99,33 @@ document.getElementById("btn-buscar").addEventListener("click", () => {
         return { ...t, valor: v };
     }).sort((a, b) => (a.año - b.año) || (obtenerMesNumero(a.mes) - obtenerMesNumero(b.mes)));
 
-    // Filtrar para mostrar en la tabla según selección
     const fila = datosClienteActual.filter(t => t.mes === mes && t.año === anio);
     const cuerpo = document.getElementById("cuerpo-tabla");
     
     if (fila.length === 0) {
         cuerpo.innerHTML = `<tr><td colspan="7" style="text-align:center;">No hay datos para el mes/año seleccionado</td></tr>`;
     } else {
-        cuerpo.innerHTML = fila.map(i => `
-            <tr>
-                <td>${i.cliente}</td>
-                <td>${i.servicio}</td>
-                <td>ACTIVO</td>
-                <td>1</td>
-                <td>${i.mes}</td>
-                <td>${i.año}</td>
-                <td>$${i.valor.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</td>
-            </tr>`).join('');
+        cuerpo.innerHTML = fila.map(i => {
+            // Pasamos el estado a mayúsculas para comparar bien
+            const estadoMayus = (i.estado || "ACTIVO").trim().toUpperCase();
+            
+            // Si dice INACTIVO o BAJA, lo pinta de rojo, si no, de verde
+            const colorTexto = (estadoMayus === "INACTIVO" || estadoMayus === "BAJA") ? "#c62828" : "#2e7d32";
+            
+            // Buscamos las unidades reales de la columna D (col[3]), si no viene ponemos 0 o 1
+            const unidadesReales = i.unidades !== undefined ? i.unidades : "1";
+            
+            return `
+                <tr>
+                    <td>${i.cliente}</td>
+                    <td>${i.servicio}</td>
+                    <td style="color: ${colorTexto}; font-weight: bold;">${estadoMayus}</td>
+                    <td>${unidadesReales}</td>
+                    <td>${i.mes}</td>
+                    <td>${i.año}</td>
+                    <td>$${i.valor.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</td>
+                </tr>`;
+        }).join('');
     }
 });
 
