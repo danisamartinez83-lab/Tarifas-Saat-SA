@@ -469,4 +469,106 @@ function cargarSelectClientes() {
 
 document.getElementById("btn-limpiar").addEventListener("click", () => location.reload());
 
+
+// =========================================================================
+// --- NUEVO EVENTO: EXPORTAR REPORTE MENSUAL GLOBAL (TODOS LOS CLIENTES) ---
+// =========================================================================
+document.getElementById("btn-reporte-global").addEventListener("click", () => {
+    const mesSel = document.getElementById("filtro-mes").value.toLowerCase();
+    const anioSel = document.getElementById("filtro-año").value;
+
+    if (!mesSel || !anioSel) {
+        return alert("Por favor, seleccione un Mes y Año en los filtros superiores para generar el reporte global.");
+    }
+
+    // 1. Filtrar todas las tarifas que coincidan con el mes y año seleccionado para TODOS los clientes
+    const datosMes = listaTarifas.filter(t => t.mes === mesSel && t.año === anioSel.toString())
+        .map(t => {
+            let n = (t.tarifa || "0").trim();
+            let v = 0;
+            if (n.includes(',') && n.includes('.')) { v = parseFloat(n.replace(/\./g, '').replace(',', '.')) || 0; } 
+            else if (n.includes(',')) { v = parseFloat(n.replace(',', '.')) || 0; } 
+            else if (n.split('.').length > 2) { v = parseFloat(n.replace(/\./g, '')) || 0; } 
+            else { v = parseFloat(n) || 0; }
+            return { ...t, valor: v };
+        })
+        .sort((a, b) => a.cliente.localeCompare(b.cliente));
+
+    if (datosMes.length === 0) {
+        return alert(`No se encontraron datos cargados para el período: ${mesSel.toUpperCase()} ${anioSel}`);
+    }
+
+    // 2. Calcular Métricas Globales del Mes
+    const totalFacturacion = datosMes.reduce((acc, item) => acc + item.valor, 0);
+    const totalClientesActivos = [...new Set(datosMes.map(d => d.cliente))].length;
+
+    // 3. Crear una estructura HTML temporal optimizada para el PDF impreso
+    const contenedorTemporal = document.createElement("div");
+    contenedorTemporal.style.padding = "20px";
+    contenedorTemporal.style.fontFamily = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+    contenedorTemporal.style.color = "#333";
+    contenedorTemporal.style.backgroundColor = "#fff";
+
+    contenedorTemporal.innerHTML = `
+        <div style="border-bottom: 2px solid #ff6600; padding-bottom: 10px; margin-bottom: 20px;">
+            <h1 style="margin: 0; color: #111; font-size: 24px;">Reporte Consolidado Mensual de Tarifas</h1>
+            <p style="margin: 5px 0 0 0; color: #666; text-transform: uppercase; font-weight: bold;">
+                Período: ${mesSel} ${anioSel} — <span style="font-size: 0.9em; color: #999;">Generado el: ${new Date().toLocaleDateString('es-AR')}</span>
+            </p>
+        </div>
+
+        <div style="display: flex; gap: 20px; margin-bottom: 30px;">
+            <div style="flex: 1; border: 1px solid #e0e0e0; border-top: 4px solid #ff6600; padding: 15px; border-radius: 4px; background: #fafafa;">
+                <span style="font-size: 11px; color: #666; font-weight: bold; text-transform: uppercase;">Total Clientes con Servicio</span>
+                <div style="font-size: 22px; font-weight: bold; margin-top: 5px; color: #111;">${totalClientesActivos}</div>
+            </div>
+            <div style="flex: 1; border: 1px solid #e0e0e0; border-top: 4px solid #27ae60; padding: 15px; border-radius: 4px; background: #fafafa;">
+                <span style="font-size: 11px; color: #666; font-weight: bold; text-transform: uppercase;">Facturación Total Estimada</span>
+                <div style="font-size: 22px; font-weight: bold; margin-top: 5px; color: #27ae60;">
+                    $${totalFacturacion.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </div>
+            </div>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px;">
+            <thead>
+                <tr style="background-color: #f1f1f1; border-bottom: 2px solid #ddd; text-align: left;">
+                    <th style="padding: 10px; font-weight: bold; color: #333;">Cliente</th>
+                    <th style="padding: 10px; font-weight: bold; color: #333;">Servicio / Concepto</th>
+                    <th style="padding: 10px; font-weight: bold; color: #333; text-align: center;">Estado</th>
+                    <th style="padding: 10px; font-weight: bold; color: #333; text-align: right;">Tarifa</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${datosMes.map((item, index) => `
+                    <tr style="border-bottom: 1px solid #eee; background-color: ${index % 2 === 0 ? '#fff' : '#fcfcfc'};">
+                        <td style="padding: 10px; font-weight: bold; color: #111;">${item.cliente}</td>
+                        <td style="padding: 10px; color: #555;">${item.servicio}</td>
+                        <td style="padding: 10px; text-align: center;"><span style="background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold;">ACTIVO</span></td>
+                        <td style="padding: 10px; text-align: right; font-weight: bold; color: #333;">
+                            $${item.valor.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+        
+        <div style="margin-top: 40px; text-align: center; font-size: 11px; color: #aaa; border-top: 1px solid #eee; padding-top: 10px;">
+            Tarifas Dashboard Ejecutivo - Documento de uso interno confidencial.
+        </div>
+    `;
+
+    const opciones = {
+        margin:       [0.5, 0.5, 0.5, 0.5],
+        filename:     `Reporte_Tarifas_Global_${mesSel}_${anioSel}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opciones).from(contenedorTemporal).save();
+});
+// =========================================================================
+
+
 cargarDatos();
