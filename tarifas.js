@@ -22,7 +22,19 @@ function procesarCSV(texto, tipo) {
     const filas = texto.split(/\r?\n/).filter(f => f.trim() !== "");
     return filas.slice(1).map(fila => {
         const col = fila.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/"/g, '').trim());
-        if (tipo === 'tarifas') return { cliente: col[0], servicio: col[1], mes: col[4]?.toLowerCase(), año: col[5], tarifa: col[6] };
+        
+        // CORREGIDO: Mapeo exacto según el orden de tu planilla
+        if (tipo === 'tarifas') {
+            return { 
+                cliente: col[0], 
+                servicio: col[1], 
+                estado: col[2], // Índice 2 para Estado
+                mes: col[4]?.toLowerCase(), // Índice 4 para Mes
+                año: col[5], // Índice 5 para Año
+                tarifa: col[6] // Índice 6 para Importe (Tarifa)
+            };
+        }
+        
         if (tipo === 'ipc') return { mes: col[0]?.toLowerCase(), año: col[1], variacion: parseFloat(col[3]?.replace(',', '.') || 0) };
         if (tipo === 'salarios') {
             let v = parseFloat((col[10] || col[9] || "0").replace('%', '').replace(',', '.')) || 0;
