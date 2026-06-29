@@ -15,50 +15,55 @@
         </header>
 
         <section class="filtros-card">
-            <div class="grid-filtros">
-                <div class="campo">
-                    <label>Cliente</label>
-                    <select id="filtro-cliente">
-                        <option value="">-- Todos los Clientes --</option>
-                    </select>
-                </div>
-                <div class="campo">
-                    <label>Mes</label>
-                    <select id="filtro-mes">
-                        <option value="">-- Todos los Meses --</option>
-                        <option value="enero">Enero</option>
-                        <option value="febrero">Febrero</option>
-                        <option value="marzo">Marzo</option>
-                        <option value="abril">Abril</option>
-                        <option value="mayo">Mayo</option>
-                        <option value="junio">Junio</option>
-                        <option value="julio">Julio</option>
-                        <option value="agosto">Agosto</option>
-                        <option value="septiembre">Septiembre</option>
-                        <option value="octubre">Octubre</option>
-                        <option value="noviembre">Noviembre</option>
-                        <option value="diciembre">Diciembre</option>
-                    </select>
-                </div>
-                <div class="campo">
-                    <label>Año</label>
-                    <select id="filtro-año">
-                        <option value="">-- Todos --</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                    </select>
-                </div>
-                <div class="campo btn-group">
-    <button id="btn-buscar" class="btn-primario">Buscar</button>
-    <button id="btn-limpiar" class="btn-secundario">Limpiar</button>
-    <button id="btn-exportar" class="btn-primario">Descargar PDF</button>
-    <button id="btn-reporte-global" class="btn-primario">
-        <i class="fas fa-file-invoice"></i> Reporte Global
-    </button>
-</div>
+    <div class="grid-filtros-layout">
+        
+        <div class="selectores-bloque">
+            <div class="campo">
+                <label>Cliente</label>
+                <select id="filtro-cliente">
+                    <option value="">-- Todos los Clientes --</option>
+                </select>
             </div>
-        </section>
+            <div class="campo">
+                <label>Mes</label>
+                <select id="filtro-mes">
+                    <option value="">-- Todos los Meses --</option>
+                    <option value="enero">Enero</option>
+                    <option value="febrero">Febrero</option>
+                    <option value="marzo">Marzo</option>
+                    <option value="abril">Abril</option>
+                    <option value="mayo">Mayo</option>
+                    <option value="junio">Junio</option>
+                    <option value="julio">Julio</option>
+                    <option value="agosto">Agosto</option>
+                    <option value="septiembre">Septiembre</option>
+                    <option value="octubre">Octubre</option>
+                    <option value="noviembre">Noviembre</option>
+                    <option value="diciembre">Diciembre</option>
+                </select>
+            </div>
+            <div class="campo">
+                <label>Año</label>
+                <select id="filtro-año">
+                    <option value="">-- Todos --</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="botones-grid-cuadrícula">
+            <button id="btn-buscar" class="btn-primario">Buscar</button>
+            <button id="btn-limpiar" class="btn-secundario">Limpiar</button>
+            <button id="btn-exportar" class="btn-primario">Descargar PDF</button>
+            <button id="btn-reporte-global" class="btn-primario">
+                <i class="fas fa-file-invoice"></i> Reporte Global
+            </button>
+        </div>
+
+    </div>
+</section>
 
         <section class="tabla-container">
             <div class="table-scroll">
