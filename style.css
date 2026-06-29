@@ -48,11 +48,25 @@ header h1 {
     margin-bottom: 30px;
 }
 
-.grid-filtros {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+/* NUEVA ESTRUCTURA: Alinea selectores a la izquierda y el bloque de botones a la derecha */
+.grid-filtros-layout {
+    display: flex;
     gap: 20px;
-    align-items: flex-end;
+    align-items: flex-end; /* Hace que los selectores y los botones se apoyen en la misma base */
+    width: 100%;
+}
+
+/* El bloque que contiene los 3 selectores distribuidos de forma fluida */
+.selectores-bloque {
+    display: flex;
+    gap: 15px;
+    flex: 1; 
+}
+
+.selectores-bloque .campo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .campo label {
@@ -71,20 +85,22 @@ select {
     height: 42px;
 }
 
-/* --- GRUPO DE BOTONES (OPCIÓN COMPACTA) --- */
-.btn-group {
-    display: flex;
-    gap: 8px; /* Reducimos levemente el espacio entre botones */
+/* --- CUADRÍCULA DE BOTONES (2x2) Fijo a la derecha --- */
+.botones-grid-cuadrícula {
+    display: grid;
+    grid-template-columns: repeat(2, 135px); /* Dos columnas fijas de 135px cada una */
+    grid-template-rows: repeat(2, 38px);     /* Dos filas compactas de 38px cada una */
+    gap: 8px;
     align-items: flex-end;
-    width: 100%;
 }
 
+/* Estilo unificado para los 4 botones dentro de la cuadrícula */
 #btn-buscar, #btn-limpiar, #btn-exportar, #btn-reporte-global {
-    flex: 1;
-    padding: 12px 8px; /* Ajustamos el padding horizontal para ganar espacio */
+    width: 100%;
+    height: 100%;
     border-radius: 4px;
     font-weight: bold;
-    font-size: 11.5px; /* Achicamos un punto el texto para garantizar que entre */
+    font-size: 11.5px; /* Tamaño ideal para que los nombres queden cómodos y no se pisen */
     cursor: pointer;
     transition: all 0.3s ease;
     border: none;
@@ -92,20 +108,23 @@ select {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    height: 45px; 
+    gap: 5px;
+    padding: 0 4px;
 }
 
+/* Botones con color corporativo de base (Gris oscuro) */
 #btn-buscar, #btn-exportar, #btn-reporte-global {
     background-color: #444;
     color: white;
 }
 
+/* Transición al Naranja corporativo al pasar el mouse */
 #btn-buscar:hover, #btn-exportar:hover, #btn-reporte-global:hover {
     background-color: #ff6600;
     box-shadow: 0 2px 5px rgba(255, 102, 0, 0.3);
 }
 
+/* Botón Limpiar (Estilo minimalista blanco/gris) */
 #btn-limpiar {
     background-color: white;
     color: #555;
