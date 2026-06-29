@@ -71,22 +71,20 @@ select {
     height: 42px;
 }
 
-/* --- GRUPO DE BOTONES (OPCIÓN FLEXIBLE DE DOS LÍNEAS) --- */
+/* --- GRUPO DE BOTONES (OPCIÓN COMPACTA) --- */
 .btn-group {
     display: flex;
-    gap: 10px;
+    gap: 8px; /* Reducimos levemente el espacio entre botones */
     align-items: flex-end;
-    flex-wrap: wrap; /* Esta propiedad mágica hace que bajen si no entran */
     width: 100%;
 }
 
 #btn-buscar, #btn-limpiar, #btn-exportar, #btn-reporte-global {
     flex: 1;
-    min-width: 100px; /* Evita que los botones colapsen y se hagan diminutos */
-    padding: 12px 12px;
+    padding: 12px 8px; /* Ajustamos el padding horizontal para ganar espacio */
     border-radius: 4px;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 11.5px; /* Achicamos un punto el texto para garantizar que entre */
     cursor: pointer;
     transition: all 0.3s ease;
     border: none;
@@ -94,7 +92,7 @@ select {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 4px;
     height: 45px; 
 }
 
